@@ -97,7 +97,7 @@ export default function Footer() {
               © {new Date().getFullYear()} {t("footer.rights")}
             </p>
             <p style={{ fontSize: 11, color: "var(--text-dim)", textAlign: isRtl ? "right" : "left" }}>
-              <a href="https://freelance.sa/certificate-validation" target="_blank" rel="noopener noreferrer" style={{ color: "var(--text-dim)", textDecoration: "underline", transition: "color 0.2s" }}>
+              <a href="https://drive.google.com/file/d/1nO0WMG__spaUmzfBSakLKUUqTx6G6HZZ/view?usp=drive_link" target="_blank" rel="noopener noreferrer" style={{ color: "var(--text-dim)", textDecoration: "underline", transition: "color 0.2s" }}>
                 {isRtl ? "وثيقة العمل الحر: fl-752412649" : "Freelance Certificate: fl-752412649"}
               </a>
             </p>
