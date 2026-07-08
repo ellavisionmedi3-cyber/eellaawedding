@@ -731,7 +731,7 @@ export default function AdminDashboardClient({
                 onClick={() => setEditingPost({ 
                   title: "", title_ar: "", slug: "", excerpt: "", excerpt_ar: "", 
                   content: "", content_ar: "", image_url: "", category: "Wedding", 
-                  category_ar: "زفاف", read_time: "5 min read", read_time_ar: "5 دقائق للقراءة", 
+                  category_ar: "زفاف", author: "Layan Ahmed", read_time: "5 min read", read_time_ar: "5 دقائق للقراءة", 
                   published: 1 
                 })} 
                 className="btn btn-primary" 
@@ -2217,12 +2217,20 @@ export default function AdminDashboardClient({
                         const file = e.target.files?.[0];
                         if (!file) return;
                         setIsUploading(true);
-                        const formData = new FormData();
-                        formData.append("file", file);
                         try {
+                          const blob = await compressImage(file);
+                          const formData = new FormData();
+                          formData.append("file", blob, file.name);
                           const res = await fetch("/api/upload", { method: "POST", body: formData });
                           const data = await res.json();
-                          if (data.url) setEditingPost({ ...editingPost, image_url: data.url });
+                          if (data.url) {
+                            setEditingPost({ ...editingPost, image_url: data.url });
+                            notify(isRtl ? "تم رفع الصورة" : "Image uploaded");
+                          } else {
+                            notify(isRtl ? "خطأ في الرفع" : "Upload failed", "error");
+                          }
+                        } catch (err) {
+                          notify(isRtl ? "خطأ في الاتصال" : "Connection error", "error");
                         } finally {
                           setIsUploading(false);
                         }
@@ -2240,6 +2248,21 @@ export default function AdminDashboardClient({
                 <div>
                   <label style={s({ display: "block", fontSize: 12, color: "var(--text-dim)", marginBottom: 8 })}>{isRtl ? "مقتطف (AR)" : "Excerpt (AR)"}</label>
                   <textarea rows={2} value={editingPost.excerpt_ar || ""} onChange={e => setEditingPost({ ...editingPost, excerpt_ar: e.target.value })} style={s({ width: "100%", padding: 12, borderRadius: 8, border: "1px solid var(--border)", background: "rgba(255,255,255,0.02)", color: "var(--text)", textAlign: "right" })} />
+                </div>
+              </div>
+
+              <div style={s({ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr", gap: 16 })}>
+                <div>
+                  <label style={s({ display: "block", fontSize: 12, color: "var(--text-dim)", marginBottom: 8 })}>{isRtl ? "الكاتب" : "Author"}</label>
+                  <input required type="text" value={editingPost.author || ""} onChange={e => setEditingPost({ ...editingPost, author: e.target.value })} style={s({ width: "100%", padding: 12, borderRadius: 8, border: "1px solid var(--border)", background: "rgba(255,255,255,0.02)", color: "var(--text)" })} />
+                </div>
+                <div>
+                  <label style={s({ display: "block", fontSize: 12, color: "var(--text-dim)", marginBottom: 8 })}>{isRtl ? "وقت القراءة (EN)" : "Read Time (EN)"}</label>
+                  <input type="text" value={editingPost.read_time || ""} onChange={e => setEditingPost({ ...editingPost, read_time: e.target.value })} style={s({ width: "100%", padding: 12, borderRadius: 8, border: "1px solid var(--border)", background: "rgba(255,255,255,0.02)", color: "var(--text)" })} />
+                </div>
+                <div>
+                  <label style={s({ display: "block", fontSize: 12, color: "var(--text-dim)", marginBottom: 8 })}>{isRtl ? "وقت القراءة (AR)" : "Read Time (AR)"}</label>
+                  <input type="text" value={editingPost.read_time_ar || ""} onChange={e => setEditingPost({ ...editingPost, read_time_ar: e.target.value })} style={s({ width: "100%", padding: 12, borderRadius: 8, border: "1px solid var(--border)", background: "rgba(255,255,255,0.02)", color: "var(--text)", textAlign: "right" })} />
                 </div>
               </div>
 

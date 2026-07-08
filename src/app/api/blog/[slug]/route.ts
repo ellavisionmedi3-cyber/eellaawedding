@@ -39,6 +39,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ sl
       image_url: data.image_url,
       category: data.category,
       category_ar: data.category_ar,
+      author: data.author,
       read_time: data.read_time,
       read_time_ar: data.read_time_ar,
       published: data.published ? 1 : 0

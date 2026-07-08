@@ -89,7 +89,7 @@ export default function BlogPostPage() {
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
               <p>
-                {isRtl ? "تصوير حفلات الزفاف هو أكثر من مجرد التقاط صور - إنه يتعلق بالحفاظ على جوهر يومك الأكثر عزيزاً. في آيلا ميديا، نتعامل مع كل حفل زفاف كقصة فريدة تنتظر أن تُروى." : "Wedding photography is more than just taking pictures—it's about preserving the essence of your most cherished day. At Ayla Media, we approach every wedding as a unique story waiting to be told."}
+                {isRtl ? "تصوير حفلات الزفاف هو أكثر من مجرد التقاط صور - إنه يتعلق بالحفاظ على جوهر يومك الأكثر عزيزاً. في إيلا ميديا، نتعامل مع كل حفل زفاف كقصة فريدة تنتظر أن تُروى." : "Wedding photography is more than just taking pictures—it's about preserving the essence of your most cherished day. At Ella Media, we approach every wedding as a unique story waiting to be told."}
               </p>
               <p>
                 {isRtl ? "يفهم فريقنا من المصورات ذوات الخبرة الفروق الثقافية ومتطلبات الخصوصية لحفلات الزفاف السعودية. نحن نعمل بحذر لالتقاط اللحظات الأصيلة دون مقاطعة تدفق احتفالك." : "Our team of experienced female photographers understands the cultural nuances and privacy requirements of Saudi weddings. We work discreetly to capture authentic moments without interrupting the flow of your celebration."}

@@ -39,6 +39,7 @@ export async function POST(request: Request) {
       image_url: data.image_url || "",
       category: data.category || "General",
       category_ar: data.category_ar || "عام",
+      author: data.author || "Layan Ahmed",
       read_time: data.read_time || "5 min read",
       read_time_ar: data.read_time_ar || "5 دقائق قراءة",
       published: data.published !== undefined ? (data.published ? 1 : 0) : 1
