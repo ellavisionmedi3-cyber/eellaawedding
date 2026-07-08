@@ -237,14 +237,14 @@ export default function AdminDashboardClient({
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     const correctUser = settingsState.admin_username || 'admin';
-    const correctPass = settingsState.admin_password || 'ayla2024';
+    const correctPass = settingsState.admin_password || 'Ee203120@#';
     
     if (loginForm.user === correctUser && loginForm.pass === correctPass) {
       setIsAuthorized(true);
       localStorage.setItem('ayla_admin_auth', 'true');
       notify(isRtl ? "تم تسجيل الدخول" : "Logged in successfully");
     } else {
-      notify(isRtl ? "بيانات غير صحيحة" : "Invalid credentials", "error");
+      notify(isRtl ? "بيانات الدخول غير صحيحة" : "Invalid credentials", "error");
     }
   };
 
@@ -388,16 +388,6 @@ export default function AdminDashboardClient({
   const s = (obj: React.CSSProperties): React.CSSProperties => obj;
 
   if (!isAuthorized) {
-    const handleLogin = (e: React.FormEvent) => {
-      e.preventDefault();
-      const validUser = settingsState.admin_username || "admin";
-      const validPass = settingsState.admin_password || "Ee203120@#";
-      if (loginForm.user === validUser && loginForm.pass === validPass) {
-        setIsAuthorized(true);
-      } else {
-        notify(isRtl ? "بيانات الدخول غير صحيحة" : "Invalid credentials", "error");
-      }
-    };
     return (
       <div style={s({ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--bg)", padding: 20 })}>
         <div className="anim-scale-in" style={s({ background: "var(--surface)", border: "1px solid var(--border)", padding: isMobile ? 20 : 40, borderRadius: "var(--radius)", width: "100%", maxWidth: isMobile ? "95vw" : 400, textAlign: isRtl ? "right" : "left", boxShadow: "0 20px 40px rgba(0,0,0,0.3)" })}>
