@@ -25,5 +25,12 @@ export const getMediaUrl = (url: string, isEmbed = false) => {
     }
   }
 
+  // Cloudinary Optimization (Auto WebP / Quality)
+  if (trimmedUrl.includes("res.cloudinary.com") && trimmedUrl.includes("/image/upload/")) {
+    if (!trimmedUrl.includes("/f_auto") && !trimmedUrl.includes("/q_auto")) {
+      return trimmedUrl.replace("/image/upload/", "/image/upload/f_auto,q_auto/");
+    }
+  }
+
   return trimmedUrl;
 };

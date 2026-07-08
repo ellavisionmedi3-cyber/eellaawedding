@@ -23,53 +23,54 @@ export default function RefundPolicyPage() {
           <div className="card" style={{ padding: "40px", background: "var(--bg-3)", display: "flex", flexDirection: "column", gap: 32, textAlign: isRtl ? "right" : "left" }}>
             
             {isRtl ? (
-              // Arabic Content
+              // Arabic Content (Requested text updated to use "إيلا ميديا")
               <>
                 <div>
-                  <h2 style={{ fontFamily: "var(--font-display)", fontSize: 24, color: "var(--pink)", marginBottom: 14 }}>1. طبيعة الخدمة وحجز الموعد</h2>
+                  <h2 style={{ fontFamily: "var(--font-display)", fontSize: 24, color: "var(--pink)", marginBottom: 14 }}>سياسة إلغاء الحجوزات واسترداد الأموال</h2>
                   <p style={{ color: "var(--text-muted)", lineHeight: 1.8 }}>
-                    نظراً لأن الخدمات المقدمة من **إيلا ميديا (Ella Media)** هي خدمات حجز وتصوير وإنتاج مخصصة وحصرية وتعتمد على حجز تواريخ محددة لفريق العمل، فإننا نطبق سياسة حجز واسترجاع واضحة وعادلة لضمان حقوق العميل والاستوديو.
+                    نظراً لطبيعة خدماتنا في **"إيلا ميديا"** والتي تتطلب حجز وتخصيص طاقم نسائي كامل ومعدات لكل مناسبة على حدة، فإننا نطبق سياسة الإلغاء والاسترجاع التالية لضمان حقوق جميع الأطراف:
                   </p>
                 </div>
 
                 <div>
-                  <h2 style={{ fontFamily: "var(--font-display)", fontSize: 24, color: "var(--pink)", marginBottom: 14 }}>2. سياسة العربون (الدُفعة المقدمة)</h2>
+                  <h2 style={{ fontFamily: "var(--font-display)", fontSize: 20, color: "var(--pink)", marginBottom: 14 }}>تأكيد الحجز والعربون</h2>
                   <p style={{ color: "var(--text-muted)", lineHeight: 1.8 }}>
-                    لتأكيد حجز تاريخ مناسبتكِ بشكل نهائي وحصري، يُطلب دفع عربون مقدم يبلغ **30% من إجمالي قيمة الباقة** المختارة. 
-                    <br />
-                    * **العربون غير مسترد** بمجرد إتمام الحجز، نظراً لأن الاستوديو يقوم برفض طلبات الحجز الأخرى لنفس التاريخ لضمان التفرغ الكامل لمناسبتكِ.
+                    يتطلب تأكيد الحجز دفع عربون (أو دفعة أولى عبر تمارا). يعتبر هذا العربون غير مسترد في حال الإلغاء من طرف العميل، وذلك لتغطية تكاليف حجز اليوم المخصص للمناسبة ومنع استقبال حجوزات أخرى لنفس التاريخ.
                   </p>
                 </div>
 
                 <div>
-                  <h2 style={{ fontFamily: "var(--font-display)", fontSize: 24, color: "var(--pink)", marginBottom: 14 }}>3. سياسة إلغاء الحجز والاسترداد</h2>
-                  <p style={{ color: "var(--text-muted)", lineHeight: 1.8, marginBottom: 10 }}>
-                    في حال رغبة العميلة في إلغاء الحجز بالكامل، تطبق الشروط التالية:
-                  </p>
-                  <ul style={{ paddingRight: 20, color: "var(--text-muted)", lineHeight: 1.8, listStyleType: "disc", marginBottom: 10 }}>
-                    <li>**الإلغاء قبل أكثر من 30 يوماً من موعد المناسبة:** يتم الاحتفاظ بالعربون (30% من قيمة الباقة)، ويتم استرداد أي مبالغ إضافية تم دفعها تتجاوز قيمة العربون بالكامل.</li>
-                    <li>**الإلغاء قبل 30 يوماً أو أقل من موعد المناسبة:** نظراً لضيق الوقت وصعوبة إعادة حجز التاريخ لعميلة أخرى، فإن إجمالي المبالغ المدفوعة (بما فيها العربون) تكون غير مستردة.</li>
-                  </ul>
+                  <h2 style={{ fontFamily: "var(--font-display)", fontSize: 20, color: "var(--pink)", marginBottom: 14 }}>الإلغاء قبل المناسبة بـ 30 يوماً أو أكثر</h2>
                   <p style={{ color: "var(--text-muted)", lineHeight: 1.8 }}>
-                    * **طريقة الاسترداد:** يتم استرداد جميع المبالغ المستحقة والمؤهلة للاسترداد **إلى نفس وسيلة الدفع الأصلية** التي استخدمتها العميلة (بما في ذلك الحسابات المرتبطة ببوابة الدفع **تمارا** أو البطاقات الائتمانية والمدى) وتستغرق معالجة الاسترداد من 7 إلى 14 يوم عمل وفقاً لسياسات البنوك.
+                    في حال طلب الإلغاء، يتم استرجاع المبالغ المدفوعة بالكامل (باستثناء قيمة العربون غير المسترد).
                   </p>
                 </div>
 
                 <div>
-                  <h2 style={{ fontFamily: "var(--font-display)", fontSize: 24, color: "var(--pink)", marginBottom: 14 }}>4. سياسة تأجيل المناسبة (إعادة الجدولة)</h2>
-                  <p style={{ color: "var(--text-muted)", lineHeight: 1.8, marginBottom: 10 }}>
-                    نحن نتفهم حدوث ظروف طارئة تتطلب تغيير موعد المناسبة، لذا نتيح إمكانية إعادة الجدولة وفق الضوابط التالية:
+                  <h2 style={{ fontFamily: "var(--font-display)", fontSize: 20, color: "var(--pink)", marginBottom: 14 }}>الإلغاء قبل المناسبة بـ 15 إلى 29 يوماً</h2>
+                  <p style={{ color: "var(--text-muted)", lineHeight: 1.8 }}>
+                    يتم استرجاع 50% من إجمالي المبالغ المدفوعة.
                   </p>
-                  <ul style={{ paddingRight: 20, color: "var(--text-muted)", lineHeight: 1.8, listStyleType: "disc" }}>
-                    <li>**التأجيل قبل 14 يوماً أو أكثر من موعد المناسبة:** يتم نقل الحجز والعربون مجاناً وبدون أي رسوم إضافية إلى الموعد الجديد المقترح، شريطة توفر فريق العمل في التاريخ الجديد.</li>
-                    <li>**التأجيل قبل أقل من 14 يوماً من موعد المناسبة:** قد يترتب على التأجيل رسوم إدارية وإعادة جدولة تبلغ **15% من قيمة الباقة الإجمالية** لتغطية تكاليف التجهيز وحجز طاقم العمل.</li>
-                  </ul>
                 </div>
 
                 <div>
-                  <h2 style={{ fontFamily: "var(--font-display)", fontSize: 24, color: "var(--pink)", marginBottom: 14 }}>5. الحالات الاستثنائية والقوة القاهرة</h2>
+                  <h2 style={{ fontFamily: "var(--font-display)", fontSize: 20, color: "var(--pink)", marginBottom: 14 }}>الإلغاء قبل المناسبة بأقل من 14 يوماً</h2>
                   <p style={{ color: "var(--text-muted)", lineHeight: 1.8 }}>
-                    في حالات القوة القاهرة المثبتة رسمياً (مثل الكوارث الطبيعية، القرارات الحكومية الطارئة التي تمنع إقامة الحفلات)، يتم الاتفاق بالتراضي على تأجيل موعد الحجز وتثبيت الحقوق للطرفين دون تطبيق أي غرامات إضافية.
+                    نعتذر عن استرجاع أي مبالغ مالية في هذه الحالة، نظراً لصعوبة تعويض الحجز وتوفير عميل بديل في هذا الوقت الضيق.
+                  </p>
+                </div>
+
+                <div>
+                  <h2 style={{ fontFamily: "var(--font-display)", fontSize: 20, color: "var(--pink)", marginBottom: 14 }}>تأجيل أو تغيير الموعد</h2>
+                  <p style={{ color: "var(--text-muted)", lineHeight: 1.8 }}>
+                    يحق للعميل طلب تأجيل الموعد مرة واحدة مجاناً، بشرط إبلاغنا قبل 14 يوماً على الأقل من الموعد الأصلي، ويخضع قبول التأجيل لتوفر الموعد الجديد في جدول حجوزاتنا.
+                  </p>
+                </div>
+
+                <div>
+                  <h2 style={{ fontFamily: "var(--font-display)", fontSize: 20, color: "var(--pink)", marginBottom: 14 }}>آلية الاسترجاع</h2>
+                  <p style={{ color: "var(--text-muted)", lineHeight: 1.8 }}>
+                    تتم معالجة المبالغ المستردة وإعادتها عبر نفس طريقة الدفع المستخدمة (بما في ذلك بوابة تمارا) خلال 7 إلى 14 يوم عمل.
                   </p>
                 </div>
               </>
@@ -77,50 +78,51 @@ export default function RefundPolicyPage() {
               // English Content
               <>
                 <div>
-                  <h2 style={{ fontFamily: "var(--font-display)", fontSize: 24, color: "var(--pink)", marginBottom: 14 }}>1. Nature of Service & Booking Exclusivity</h2>
+                  <h2 style={{ fontFamily: "var(--font-display)", fontSize: 24, color: "var(--pink)", marginBottom: 14 }}>Booking Cancellation & Refund Policy</h2>
                   <p style={{ color: "var(--text-muted)", lineHeight: 1.8 }}>
-                    Since the services provided by **Ayla Media** are customized, high-end photography bookings assigned to specific dates, we maintain a clear refund and cancellation policy to protect the interests of both our clients and our studio.
+                    Due to the nature of our services at **"Ella Media,"** which require booking and dedicating a full all-female crew and specialized equipment for each event individually, we apply the following cancellation and refund policy to protect the rights of all parties:
                   </p>
                 </div>
 
                 <div>
-                  <h2 style={{ fontFamily: "var(--font-display)", fontSize: 24, color: "var(--pink)", marginBottom: 14 }}>2. Deposit Policy</h2>
+                  <h2 style={{ fontFamily: "var(--font-display)", fontSize: 20, color: "var(--pink)", marginBottom: 14 }}>Booking Confirmation & Deposit</h2>
                   <p style={{ color: "var(--text-muted)", lineHeight: 1.8 }}>
-                    To confirm and secure your event date exclusively, a non-refundable deposit of **30% of the total package value** is required.
-                    <br />
-                    * **The deposit is non-refundable** upon booking, as we immediately block the date and turn down other inquiries to dedicate our team to your wedding.
+                    A deposit (or first payment via Tamara) is required to secure the booking. This deposit is non-refundable in the event of cancellation by the client, in order to cover the costs of reserving the date and declining other bookings.
                   </p>
                 </div>
 
                 <div>
-                  <h2 style={{ fontFamily: "var(--font-display)", fontSize: 24, color: "var(--pink)", marginBottom: 14 }}>3. Cancellation & Refund Policy</h2>
-                  <p style={{ color: "var(--text-muted)", lineHeight: 1.8, marginBottom: 10 }}>
-                    In the event that the client wishes to cancel the booking, the following conditions apply:
-                  </p>
-                  <ul style={{ paddingLeft: 20, color: "var(--text-muted)", lineHeight: 1.8, listStyleType: "disc", marginBottom: 10 }}>
-                    <li>**Cancellation more than 30 days prior to the event date:** The 30% deposit is retained by the studio, and any additional payments made above the deposit will be fully refunded.</li>
-                    <li>**Cancellation 30 days or less prior to the event date:** Due to the difficulty of rebooking the date on short notice, the total amount paid (including the deposit) is non-refundable.</li>
-                  </ul>
+                  <h2 style={{ fontFamily: "var(--font-display)", fontSize: 20, color: "var(--pink)", marginBottom: 14 }}>Cancellation 30 Days or More Prior</h2>
                   <p style={{ color: "var(--text-muted)", lineHeight: 1.8 }}>
-                    * **Refund Method:** All eligible refunds are processed back **to the original payment method** used at checkout (including **Tamara** installment accounts, credit cards, or Mada). Processing refunds typically takes 7 to 14 business days, depending on bank rules.
+                    In case of cancellation, all amounts paid will be fully refunded, except for the non-refundable deposit.
                   </p>
                 </div>
 
                 <div>
-                  <h2 style={{ fontFamily: "var(--font-display)", fontSize: 24, color: "var(--pink)", marginBottom: 14 }}>4. Postponement & Rescheduling Policy</h2>
-                  <p style={{ color: "var(--text-muted)", lineHeight: 1.8, marginBottom: 10 }}>
-                    We understand that unexpected circumstances can arise. Rescheduling is permitted under the following terms:
+                  <h2 style={{ fontFamily: "var(--font-display)", fontSize: 20, color: "var(--pink)", marginBottom: 14 }}>Cancellation Between 15 to 29 Days Prior</h2>
+                  <p style={{ color: "var(--text-muted)", lineHeight: 1.8 }}>
+                    50% of the total amount paid will be refunded.
                   </p>
-                  <ul style={{ paddingLeft: 20, color: "var(--text-muted)", lineHeight: 1.8, listStyleType: "disc" }}>
-                    <li>**Rescheduling 14 days or more before the event:** The deposit and booking will be transferred to the new date free of charge, subject to our crew's availability.</li>
-                    <li>**Rescheduling less than 14 days before the event:** A rescheduling fee of **15% of the total package price** may apply to cover administrative costs and team restructuring.</li>
-                  </ul>
                 </div>
 
                 <div>
-                  <h2 style={{ fontFamily: "var(--font-display)", fontSize: 24, color: "var(--pink)", marginBottom: 14 }}>5. Force Majeure</h2>
+                  <h2 style={{ fontFamily: "var(--font-display)", fontSize: 20, color: "var(--pink)", marginBottom: 14 }}>Cancellation Less Than 14 Days Prior</h2>
                   <p style={{ color: "var(--text-muted)", lineHeight: 1.8 }}>
-                    In verified cases of force majeure (such as natural disasters or government-mandated restrictions preventing events), both parties will cooperate to postpone the event to an mutually agreed date without any penalties.
+                    We apologize as no refunds can be made in this case, due to the difficulty of rebooking the date on short notice.
+                  </p>
+                </div>
+
+                <div>
+                  <h2 style={{ fontFamily: "var(--font-display)", fontSize: 20, color: "var(--pink)", marginBottom: 14 }}>Rescheduling & Date Changes</h2>
+                  <p style={{ color: "var(--text-muted)", lineHeight: 1.8 }}>
+                    The client is entitled to reschedule the date once for free, provided we are notified at least 14 days prior to the original date. Rescheduling is subject to date availability in our booking schedule.
+                  </p>
+                </div>
+
+                <div>
+                  <h2 style={{ fontFamily: "var(--font-display)", fontSize: 20, color: "var(--pink)", marginBottom: 14 }}>Refund Processing</h2>
+                  <p style={{ color: "var(--text-muted)", lineHeight: 1.8 }}>
+                    Eligible refunds are processed and returned via the same payment method used (including Tamara portal) within 7 to 14 business days.
                   </p>
                 </div>
               </>

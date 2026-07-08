@@ -4,9 +4,16 @@ import connectToDatabase, { Booking } from "@/lib/db";
 export async function POST(request: Request) {
   try {
     const data = await request.json();
+
+    // Honeypot anti-spam filter
+    if (data.website_url) {
+      console.warn("[SPAM FILTER] Bot submission blocked.");
+      return NextResponse.json({ success: true, spam: true });
+    }
+
     await connectToDatabase();
     
-    await Booking.create({
+    const newBooking = await Booking.create({
       client_name: data.client_name,
       mobile: data.mobile,
       email: data.email || "",
@@ -18,7 +25,7 @@ export async function POST(request: Request) {
       status: "pending"
     });
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, id: newBooking._id.toString() });
   } catch (error) {
     console.error("Booking error:", error);
     return NextResponse.json({ error: "Failed to create booking" }, { status: 500 });

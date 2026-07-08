@@ -43,6 +43,16 @@ export default function ContactForm() {
     const venue = fd.get("venue_location") as string;
     const notes = fd.get("notes") as string;
 
+    // Honeypot anti-spam check
+    const website_url = fd.get("website_url") as string;
+    if (website_url) {
+      setTimeout(() => {
+        setDone(true);
+        setLoading(false);
+      }, 1000);
+      return;
+    }
+
     const body = { 
       client_name, 
       mobile, 
@@ -52,7 +62,8 @@ export default function ContactForm() {
       venue_location: venue, 
       package: pkg, 
       additional_services: services.join(", "), 
-      notes 
+      notes,
+      website_url: ""
     };
 
     try {
@@ -174,6 +185,8 @@ export default function ContactForm() {
           <div className="card reveal-scale" style={{ padding: "40px 36px" }}>
             {error && <div style={{ padding: "14px 18px", borderRadius: 10, background: "rgba(147,0,10,0.2)", border: "1px solid rgba(255,180,171,0.2)", color: "#ffb4ab", fontSize: 14, marginBottom: 24, textAlign: "center" }}>{error}</div>}
             <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+              {/* Honeypot hidden field for anti-spam */}
+              <input type="text" name="website_url" style={{ display: "none" }} tabIndex={-1} autoComplete="off" />
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
                 {field(t("contact.form.name"), "client_name", "text", t("contact.form.placeholders.name"))}
                 {field(t("contact.form.mobile"), "mobile", "tel", "+966 5X XXX XXXX")}

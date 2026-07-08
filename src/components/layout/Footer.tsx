@@ -113,6 +113,15 @@ export default function Footer() {
                 </>
               )}
             </p>
+            <div style={{ display: "flex", gap: 12, alignItems: "center", marginTop: 8, flexWrap: "wrap", justifyContent: isRtl ? "flex-end" : "flex-start", flexDirection: isRtl ? "row-reverse" : "row" }}>
+              <img src="https://cdn.tamara.co/assets/svg/tamara-logo-badge-ar.svg" alt="Tamara" style={{ height: 18 }} />
+              <span style={{ fontSize: 13, color: "var(--text-dim)" }}>|</span>
+              <span style={{ fontWeight: 800, fontSize: 9, color: "var(--text-dim)", letterSpacing: 0.5 }}>MADA</span>
+              <span style={{ fontSize: 13, color: "var(--text-dim)" }}>|</span>
+              <span style={{ fontWeight: 800, fontSize: 9, color: "var(--text-dim)", letterSpacing: 0.5 }}>VISA</span>
+              <span style={{ fontSize: 13, color: "var(--text-dim)" }}>|</span>
+              <span style={{ fontWeight: 800, fontSize: 9, color: "var(--text-dim)", letterSpacing: 0.5 }}>MASTERCARD</span>
+            </div>
           </div>
           <div style={{ display: "flex", gap: 24, flexDirection: isRtl ? "row-reverse" : "row" }}>
             {[

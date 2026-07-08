@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
+import { getMediaUrl } from "@/lib/utils";
 
 interface GalleryItem { id: number; title: string; category: string; image_url: string; location: string|null; year: number|null; featured: number; }
 
@@ -55,7 +56,7 @@ export default function GalleryClient({ items, categories }: { items: GalleryIte
               style={{ position: "relative", overflow: "hidden", borderRadius: "var(--radius)", cursor: "pointer" }}
             >
               <img 
-                src={item.image_url} 
+                src={getMediaUrl(item.image_url)} 
                 alt={item.title} 
                 loading="lazy" 
                 className="gallery-img bw-to-color" 
@@ -77,7 +78,7 @@ export default function GalleryClient({ items, categories }: { items: GalleryIte
             style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.95)", zIndex: 2000, display: "flex", alignItems: "center", justifyContent: "center", padding: 40, cursor: "zoom-out" }}
           >
             <img 
-              src={selectedImage} 
+              src={getMediaUrl(selectedImage)} 
               alt="Full Size" 
               style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain", borderRadius: 8, boxShadow: "0 0 50px rgba(0,0,0,0.5)" }} 
             />

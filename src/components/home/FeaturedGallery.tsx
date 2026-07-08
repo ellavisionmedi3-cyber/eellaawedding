@@ -52,7 +52,7 @@ export default function FeaturedGallery({ items }: { items: GalleryItem[] }) {
              
              return (
               <div key={item.id} className={`bento-item anim-scale-in`} style={{ gridColumn: gridSpan, aspectRatio: aspectRatio, animationDelay: `${i * 0.15}s`, position: "relative", overflow: "hidden", borderRadius: "var(--radius)", cursor: "pointer" }}>
-                <img src={getMediaUrl(item.image_url)} alt={isRtl && item.title_ar ? item.title_ar : item.title} className="bento-img" style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.7s ease", display: "block" }} />
+                <img src={getMediaUrl(item.image_url)} alt={isRtl && item.title_ar ? item.title_ar : item.title} loading="lazy" className="bento-img" style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.7s ease", display: "block" }} />
                 <div className="bento-overlay" style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 50%)", opacity: 0, transition: "opacity 0.3s", display: "flex", alignItems: "flex-end", padding: 24 }}>
                   <span style={{ color: "#fff", fontSize: 14, fontWeight: 600 }}>{isRtl && item.title_ar ? item.title_ar : item.title}</span>
                 </div>

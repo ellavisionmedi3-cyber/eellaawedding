@@ -33,6 +33,7 @@ function CheckoutContent() {
     event_date: "",
     event_location: "",
     notes: "",
+    website_url: ""
   });
   
   // Card details states (mock)
@@ -82,6 +83,15 @@ function CheckoutContent() {
     if (!selectedPkg) return;
 
     setIsSubmitting(true);
+
+    if (formData.website_url) {
+      setTimeout(() => {
+        setOrderId("ORD-" + Math.floor(100000 + Math.random() * 900000));
+        setIsSuccess(true);
+        setIsSubmitting(false);
+      }, 1000);
+      return;
+    }
 
     try {
       // 1. Create booking in DB
@@ -220,6 +230,8 @@ function CheckoutContent() {
           {/* Left Column: Form */}
           <div className="card" style={{ padding: "40px 32px", background: "var(--bg-3)" }}>
             <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+              {/* Honeypot hidden field for anti-spam */}
+              <input type="text" name="website_url" value={formData.website_url} onChange={(e) => setFormData(prev => ({...prev, website_url: e.target.value}))} style={{ display: "none" }} tabIndex={-1} autoComplete="off" />
               
               {/* Section 1: Customer details */}
               <div>
