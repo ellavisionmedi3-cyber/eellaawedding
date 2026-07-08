@@ -92,9 +92,28 @@ export default function Footer() {
 
         {/* Bottom row */}
         <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: 16, flexDirection: isRtl ? "row-reverse" : "row" }}>
-          <p style={{ fontSize: 12, color: "var(--text-dim)", textAlign: isRtl ? "right" : "left" }}>
-            © {new Date().getFullYear()} {t("footer.rights")}
-          </p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6, alignItems: isRtl ? "flex-end" : "flex-start" }}>
+            <p style={{ fontSize: 12, color: "var(--text-dim)", textAlign: isRtl ? "right" : "left" }}>
+              © {new Date().getFullYear()} {t("footer.rights")}
+            </p>
+            <p style={{ fontSize: 11, color: "var(--text-dim)", textAlign: isRtl ? "right" : "left" }}>
+              {isRtl ? (
+                <>
+                  وثيقة العمل الحر:{" "}
+                  <a href="https://verify.freelance.sa/portal/document/fe-752412649" target="_blank" rel="noopener noreferrer" style={{ color: "var(--pink)", textDecoration: "underline" }}>
+                    fe-752412649
+                  </a>
+                </>
+              ) : (
+                <>
+                  Freelance Certificate:{" "}
+                  <a href="https://verify.freelance.sa/portal/document/fe-752412649" target="_blank" rel="noopener noreferrer" style={{ color: "var(--pink)", textDecoration: "underline" }}>
+                    fe-752412649
+                  </a>
+                </>
+              )}
+            </p>
+          </div>
           <div style={{ display: "flex", gap: 24, flexDirection: isRtl ? "row-reverse" : "row" }}>
             {[
               { label: t("footer.policy"), href: "/privacy" },

@@ -2,6 +2,7 @@
 import { useLanguage } from "@/context/LanguageContext";
 import { useSettings } from "@/context/SettingsContext";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 interface Package { 
   id: string; 
@@ -84,20 +85,13 @@ export default function PackagesPage() {
                       </li>
                     ))}
                   </ul>
-                  <button 
-                    onClick={() => {
-                      const msg = isRtl 
-                        ? `مرحباً، أود حجز باقة (${name}). الرجاء التواصل معي لتأكيد التفاصيل.`
-                        : `Hello, I'm interested in booking the (${name}) package. Please get back to me with details.`;
-                      const phone = settings?.social_whatsapp || settings?.contact_phone || "966500000000";
-                      const cleanNumber = phone.replace(/[^0-9]/g, "");
-                      window.open(`https://wa.me/${cleanNumber}?text=${encodeURIComponent(msg)}`, '_blank');
-                    }}
+                  <Link 
+                    href={`/checkout?package=${pkg.tier}`}
                     className={featured ? "btn btn-primary" : "btn btn-outline"} 
                     style={{ width: "100%", display: "flex", justifyContent: "center" }}
                   >
                     {featured ? t("packages.bookSignature") : t("packages.reserve")}
-                  </button>
+                  </Link>
                 </div>
               );
             })}
