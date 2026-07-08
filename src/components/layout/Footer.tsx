@@ -97,8 +97,9 @@ export default function Footer() {
           </p>
           <div style={{ display: "flex", gap: 24, flexDirection: isRtl ? "row-reverse" : "row" }}>
             {[
-              { label: t("footer.policy"), href: "#" },
-              { label: t("footer.terms"), href: "#" },
+              { label: t("footer.policy"), href: "/privacy" },
+              { label: t("footer.terms"), href: "/terms" },
+              { label: isRtl ? "سياسة الاستبدال والاسترجاع" : "Refund Policy", href: "/refund" },
               { label: t("footer.faq"), href: "#" },
             ].map(l => (
               <Link key={l.label} href={l.href} style={{ fontSize: 12, color: "var(--text-dim)", transition: "color 0.2s" }}>{l.label}</Link>
