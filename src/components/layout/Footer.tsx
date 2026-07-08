@@ -97,21 +97,9 @@ export default function Footer() {
               © {new Date().getFullYear()} {t("footer.rights")}
             </p>
             <p style={{ fontSize: 11, color: "var(--text-dim)", textAlign: isRtl ? "right" : "left" }}>
-              {isRtl ? (
-                <>
-                  وثيقة العمل الحر:{" "}
-                  <a href="https://verify.freelance.sa/portal/document/fe-752412649" target="_blank" rel="noopener noreferrer" style={{ color: "var(--pink)", textDecoration: "underline" }}>
-                    fe-752412649
-                  </a>
-                </>
-              ) : (
-                <>
-                  Freelance Certificate:{" "}
-                  <a href="https://verify.freelance.sa/portal/document/fe-752412649" target="_blank" rel="noopener noreferrer" style={{ color: "var(--pink)", textDecoration: "underline" }}>
-                    fe-752412649
-                  </a>
-                </>
-              )}
+              <a href="https://freelance.sa/certificate-validation" target="_blank" rel="noopener noreferrer" style={{ color: "var(--text-dim)", textDecoration: "underline", transition: "color 0.2s" }}>
+                {isRtl ? "وثيقة العمل الحر: fl-752412649" : "Freelance Certificate: fl-752412649"}
+              </a>
             </p>
             <div style={{ display: "flex", gap: 12, alignItems: "center", marginTop: 8, flexWrap: "wrap", justifyContent: isRtl ? "flex-end" : "flex-start", flexDirection: isRtl ? "row-reverse" : "row" }}>
               <img src="https://cdn.tamara.co/assets/svg/tamara-logo-badge-ar.svg" alt="Tamara" style={{ height: 18 }} />

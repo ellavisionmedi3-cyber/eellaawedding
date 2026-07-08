@@ -392,7 +392,7 @@ function CheckoutContent() {
               >
                 {isSubmitting 
                   ? (isRtl ? "جاري إتمام المعاملة..." : "Processing Order...") 
-                  : (isRtl ? `إتمام الحجز والدفع - ${selectedPkg?.price.toLocaleString()} ريال` : `Pay & Confirm Booking - ${selectedPkg?.price.toLocaleString()} SAR`)}
+                  : (isRtl ? `إتمام الحجز والدفع - ${selectedPkg?.price.toLocaleString()} ر.س` : `Pay & Confirm Booking - ${selectedPkg?.price.toLocaleString()} SAR`)}
               </button>
             </form>
           </div>

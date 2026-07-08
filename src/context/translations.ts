@@ -323,7 +323,7 @@ export const translations: any = {
       titlePart2: "إرثك",
       desc: "تصوير حصري بقيادة طاقم نسائي لأثمن لحظاتك. قصص فنية يتم توثيقها بدقة وأناقة.",
       mostRequested: "الأكثر طلباً",
-      currency: "ريال",
+      currency: "ر.س",
       reserve: "احجز الآن",
       bookSignature: "احجز التجربة المميزة",
       faqTitle: "الأسئلة الشائعة",
