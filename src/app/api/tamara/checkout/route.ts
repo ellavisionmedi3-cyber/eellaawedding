@@ -5,9 +5,9 @@ export async function POST(request: Request) {
     const data = await request.json();
     const { orderId, amount, customer, packageName } = data;
 
-    const TAMARA_API_URL = process.env.TAMARA_API_URL || "https://api-sandbox.tamara.co";
+    const TAMARA_API_URL = process.env.TAMARA_API_URL || "https://api.tamara.co";
     const TAMARA_API_TOKEN = process.env.TAMARA_API_TOKEN;
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.eellaawedding.com";
 
     // If no keys are set, return a mock response for review validation
     if (!TAMARA_API_TOKEN) {
@@ -25,20 +25,21 @@ export async function POST(request: Request) {
     const firstName = nameParts[0] || "Client";
     const lastName = nameParts.slice(1).join(" ") || "Customer";
 
-    // Clean Phone
+    // Clean Phone (strip spaces and non-digits)
     let phoneNumber = customer.phone || "";
-    // Ensure KSA phone has a leading country code if not present, and is well-formatted
-    phoneNumber = phoneNumber.replace(/\s+/g, "");
-    if (!phoneNumber.startsWith("+") && !phoneNumber.startsWith("966")) {
-      // If it starts with 05, remove 0 and add 966
-      if (phoneNumber.startsWith("05")) {
-        phoneNumber = "966" + phoneNumber.substring(1);
-      } else {
-        phoneNumber = "966" + phoneNumber;
-      }
+    phoneNumber = phoneNumber.replace(/[^0-9]/g, "");
+
+    // If it starts with +966 or 966, let's keep it.
+    // If it starts with 05, strip the 0 so it becomes 5xxxxxxxx (Standard Tamara consumer phone)
+    if (phoneNumber.startsWith("96605")) {
+      phoneNumber = "9665" + phoneNumber.substring(5);
+    } else if (phoneNumber.startsWith("05")) {
+      phoneNumber = "5" + phoneNumber.substring(2);
+    } else if (phoneNumber.startsWith("9665")) {
+      // already in standard international format
+    } else if (phoneNumber.startsWith("5") && phoneNumber.length === 9) {
+      // standard KSA local format without 0
     }
-    // Make sure phone contains only digits (plus is allowed by some endpoints but let's make it standard KSA number)
-    phoneNumber = phoneNumber.replace(/[^0-9+]/g, "");
 
     const requestBody = {
       order_reference_id: orderId,
@@ -46,11 +47,19 @@ export async function POST(request: Request) {
         amount: parseFloat(amount),
         currency: "SAR"
       },
+      shipping_amount: {
+        amount: 0,
+        currency: "SAR"
+      },
+      tax_amount: {
+        amount: 0,
+        currency: "SAR"
+      },
       description: `Wedding photography booking for package: ${packageName || "Wedding Package"}`,
       country_code: "SA",
       payment_type: "PAY_BY_INSTALMENTS",
       locale: "ar_SA",
-      customer: {
+      consumer: {
         first_name: firstName,
         last_name: lastName,
         phone_number: phoneNumber,
