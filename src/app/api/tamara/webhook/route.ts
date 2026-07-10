@@ -162,17 +162,27 @@ async function sendNotificationAlert(booking: any, eventType: string, orderId: s
         `• *رقم الحجز:* ${orderRef}\n\n` +
         `رابط المحادثة مباشرة: https://wa.me/${clientMobile.replace(/[^0-9]/g, "")}`;
 
-      const response = await fetch(waApiUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          token: waToken,
-          to: waTo,
-          body: waMsg,
+      let response;
+      if (waApiUrl.includes("callmebot.com")) {
+        const queryParams = new URLSearchParams({
           phone: waTo,
-          message: waMsg
-        })
-      });
+          text: waMsg,
+          apikey: waToken
+        });
+        response = await fetch(`${waApiUrl}?${queryParams.toString()}`);
+      } else {
+        response = await fetch(waApiUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            token: waToken,
+            to: waTo,
+            body: waMsg,
+            phone: waTo,
+            message: waMsg
+          })
+        });
+      }
 
       if (response.ok) {
         console.log(`[TAMARA WEBHOOK ALERT] WhatsApp alert sent successfully to ${waTo}`);
