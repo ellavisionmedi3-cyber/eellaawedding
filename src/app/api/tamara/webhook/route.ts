@@ -3,6 +3,61 @@ import mongoose from "mongoose";
 import nodemailer from "nodemailer";
 import connectToDatabase, { Booking } from "@/lib/db";
 
+// Helper function to send Telegram alert to admin
+async function sendTelegramAlert(booking: any, title: string, statusText: string, orderId: string) {
+  const botToken = process.env.TELEGRAM_BOT_TOKEN;
+  const chatId = process.env.TELEGRAM_CHAT_ID;
+
+  if (!botToken || !chatId) {
+    console.log("[TELEGRAM ALERT] Token or Chat ID not configured. Skipping Telegram.");
+    return;
+  }
+
+  const orderRef = booking._id.toString();
+  const clientName = booking.client_name;
+  const clientMobile = booking.mobile;
+  const clientEmail = booking.email || "غير محدد";
+  const eventDate = booking.event_date || "غير محدد";
+  const venue = booking.venue_location || "غير محدد";
+  const packageName = booking.package;
+
+  const messageText = 
+    `🔔 <b>${title}</b> 🔔\n\n` +
+    `• <b>رقم الحجز (الموقع):</b> <code>${orderRef}</code>\n` +
+    `• <b>رقم الطلب (تمارا):</b> <code>${orderId}</code>\n` +
+    `• <b>العميلة:</b> ${clientName}\n` +
+    `• <b>الجوال:</b> ${clientMobile}\n` +
+    `• <b>البريد:</b> ${clientEmail}\n` +
+    `• <b>التاريخ:</b> ${eventDate}\n` +
+    `• <b>الموقع:</b> ${venue}\n` +
+    `• <b>الباقة:</b> ${packageName}\n` +
+    `• <b>طريقة الدفع:</b> تمارا\n` +
+    `• <b>حالة الدفع:</b> ${statusText}\n\n` +
+    `🔗 <a href="https://wa.me/${clientMobile.replace(/[^0-9]/g, "")}">محادثة واتساب مباشرة</a>`;
+
+  try {
+    const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: messageText,
+        parse_mode: "HTML",
+        disable_web_page_preview: true
+      })
+    });
+    if (res.ok) {
+      console.log("[TELEGRAM ALERT SUCCESS] Sent notification to chat:", chatId);
+    } else {
+      const errText = await res.text();
+      console.warn("[TELEGRAM ALERT ERROR] Telegram returned error:", errText);
+    }
+  } catch (error) {
+    console.error("[TELEGRAM ALERT EXCEPTION] Failed to send telegram notification:", error);
+  }
+}
+
 // Helper function to send email and WhatsApp alerts to admin, and a receipt email to the client
 async function sendNotificationAlert(booking: any, eventType: string, orderId: string) {
   const mailHost = process.env.SMTP_HOST;
@@ -28,6 +83,11 @@ async function sendNotificationAlert(booking: any, eventType: string, orderId: s
   };
 
   const statusText = statusTranslation[eventType] || eventType;
+
+  // Send Telegram Alert to Admin (non-blocking)
+  sendTelegramAlert(booking, "تحديث دفع تمارا", statusText, orderId).catch(err => {
+    console.error("[TELEGRAM ERROR] Failed to send webhook telegram alert:", err);
+  });
 
   // 1. Prepare Admin Email Html
   const adminEmailHtml = `

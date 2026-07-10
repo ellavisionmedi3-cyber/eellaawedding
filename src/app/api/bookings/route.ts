@@ -2,6 +2,61 @@ import { NextResponse } from "next/server";
 import connectToDatabase, { Booking } from "@/lib/db";
 import nodemailer from "nodemailer";
 
+// Helper function to send Telegram alert to admin
+async function sendTelegramAlert(booking: any, title: string, statusText: string) {
+  const botToken = process.env.TELEGRAM_BOT_TOKEN;
+  const chatId = process.env.TELEGRAM_CHAT_ID;
+
+  if (!botToken || !chatId) {
+    console.log("[TELEGRAM ALERT] Token or Chat ID not configured. Skipping Telegram.");
+    return;
+  }
+
+  const orderRef = booking._id.toString();
+  const clientName = booking.client_name;
+  const clientMobile = booking.mobile;
+  const clientEmail = booking.email || "غير محدد";
+  const eventDate = booking.event_date || "غير محدد";
+  const venue = booking.venue_location || "غير محدد";
+  const packageName = booking.package;
+  const paymentMethod = booking.payment_method === "tamara" ? "تمارا" : booking.payment_method === "mada" ? "مدى" : "بطاقة";
+
+  const messageText = 
+    `🔔 <b>${title}</b> 🔔\n\n` +
+    `• <b>رقم الحجز:</b> <code>${orderRef}</code>\n` +
+    `• <b>العميلة:</b> ${clientName}\n` +
+    `• <b>الجوال:</b> ${clientMobile}\n` +
+    `• <b>البريد:</b> ${clientEmail}\n` +
+    `• <b>التاريخ:</b> ${eventDate}\n` +
+    `• <b>الموقع:</b> ${venue}\n` +
+    `• <b>الباقة:</b> ${packageName}\n` +
+    `• <b>طريقة الدفع:</b> ${paymentMethod}\n` +
+    `• <b>حالة الحجز:</b> ${statusText}\n\n` +
+    `🔗 <a href="https://wa.me/${clientMobile.replace(/[^0-9]/g, "")}">محادثة واتساب مباشرة</a>`;
+
+  try {
+    const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: messageText,
+        parse_mode: "HTML",
+        disable_web_page_preview: true
+      })
+    });
+    if (res.ok) {
+      console.log("[TELEGRAM ALERT SUCCESS] Sent notification to chat:", chatId);
+    } else {
+      const errText = await res.text();
+      console.warn("[TELEGRAM ALERT ERROR] Telegram returned error:", errText);
+    }
+  } catch (error) {
+    console.error("[TELEGRAM ALERT EXCEPTION] Failed to send telegram notification:", error);
+  }
+}
+
 // Helper function to send email & WhatsApp notifications to admin upon new booking creation
 async function sendAdminNewBookingEmail(booking: any) {
   const mailHost = process.env.SMTP_HOST;
@@ -102,7 +157,7 @@ async function sendAdminNewBookingEmail(booking: any) {
     }
   }
 
-  // 2. Send WhatsApp Notification to Admin (Supports free CallMeBot or paid UltraMsg gateways)
+  // 2. Send WhatsApp Notification to Admin
   const waApiUrl = process.env.WHATSAPP_API_URL;
   const waToken = process.env.WHATSAPP_TOKEN;
   const waTo = process.env.WHATSAPP_TO;
@@ -256,6 +311,11 @@ export async function POST(request: Request) {
     // Send receipt email to client (non-blocking)
     sendClientNewBookingEmail(newBooking).catch(err => {
       console.error("[CLIENT EMAIL ERROR] Failed to send client receipt alert asynchronously:", err);
+    });
+
+    // Send Telegram alert to admin (non-blocking)
+    sendTelegramAlert(newBooking, "طلب حجز جديد", "قيد الانتظار").catch(err => {
+      console.error("[TELEGRAM EMAIL ERROR] Failed to send Telegram alert asynchronously:", err);
     });
 
     return NextResponse.json({ success: true, id: newBooking._id.toString() });
