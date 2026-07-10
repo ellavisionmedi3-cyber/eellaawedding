@@ -348,8 +348,8 @@ function CheckoutContent() {
           </h2>
           <p style={{ fontSize: 16, color: "var(--text-muted)", lineHeight: 1.75, marginBottom: 16 }}>
             {isRtl 
-              ? "شكراً لكِ. تم استلام مدفوعاتك وتأكيد حجز الباقة بنجاح." 
-              : "Thank you. Your payment was processed and your booking has been confirmed."}
+              ? "شكراً لكِ. تم استلام طلب الحجز والدفع بنجاح. ستصلكِ رسالة تأكيد بالتفاصيل على البريد الإلكتروني الذي قمتِ بإدخاله خلال لحظات." 
+              : "Thank you. Your booking and payment have been received successfully. A confirmation email with details will be sent to your email address shortly."}
           </p>
           <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--border)", borderRadius: 12, padding: "16px 20px", display: "flex", justifyContent: "space-between", marginBottom: 36, fontSize: 14 }}>
             <span style={{ color: "var(--text-dim)" }}>{isRtl ? "رقم الطلب:" : "Order Reference:"}</span>
