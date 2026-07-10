@@ -72,7 +72,7 @@ async function sendClientStatusEmail(booking: any, newStatus: string) {
     subject = `إلغاء حجز موعد تصوير مناسبتك - ايلا ميديا`;
     htmlContent = `
       <div style="font-family: Arial, sans-serif; direction: rtl; text-align: right; max-width: 600px; margin: 0 auto; border: 1px solid #ccc; border-radius: 10px; padding: 25px; background-color: #fff;">
-        <h2 style="color: #666; border-bottom: 2px solid #ccc; padding-bottom: 10px; text-align: center;">إشعار إلغاء حجز</h2>
+        <h2 style="color: #ea580c; border-bottom: 2px solid #ccc; padding-bottom: 10px; text-align: center;">إشعار إلغاء حجز</h2>
         <p style="font-size: 16px; color: #333; line-height: 1.6;">مرحباً <strong>${clientName}</strong>،</p>
         <p style="font-size: 16px; color: #333; line-height: 1.6;">نود إخطاركِ بأنه تم إلغاء حجز موعد تصوير مناسبتك بناءً على طلبك أو لعدم اكتمال إجراءات الدفع.</p>
         
@@ -85,6 +85,48 @@ async function sendClientStatusEmail(booking: any, newStatus: string) {
         
         <div style="text-align: center; margin-top: 30px; border-top: 1px solid #ddd; padding-top: 20px;">
           <p style="font-size: 14px; color: #777;"><strong>ايلا ميديا للتصوير السينمائي</strong></p>
+        </div>
+      </div>
+    `;
+  } else if (newStatus === "expired") {
+    subject = `منتهي - حجز موعد تصوير مناسبتك لدى ايلا ميديا`;
+    htmlContent = `
+      <div style="font-family: Arial, sans-serif; direction: rtl; text-align: right; max-width: 600px; margin: 0 auto; border: 1px solid #ccc; border-radius: 10px; padding: 25px; background-color: #fff;">
+        <h2 style="color: #854d0e; border-bottom: 2px solid #ccc; padding-bottom: 10px; text-align: center;">إشعار انتهاء موعد الحجز ⏳</h2>
+        <p style="font-size: 16px; color: #333; line-height: 1.6;">مرحباً <strong>${clientName}</strong>،</p>
+        <p style="font-size: 16px; color: #333; line-height: 1.6;">نود إخطاركِ بأن الحجز الخاص بمناسبتك قد تم تعيين حالته كـ <strong>(منتهي)</strong> في نظامنا لتجاوز الموعد المحدد.</p>
+        
+        <div style="background-color: #fef9c3; padding: 15px; border-radius: 8px; margin: 20px 0; border: 1px solid #fef08a;">
+          <p style="margin: 8px 0; font-size: 15px;">• <strong>الباقة:</strong> ${packageName}</p>
+          <p style="margin: 8px 0; font-size: 15px;">• <strong>تاريخ الحجز:</strong> ${eventDate}</p>
+          <p style="margin: 8px 0; font-size: 15px;">• <strong>حالة الحجز الحالية:</strong> منتهي / Expired</p>
+        </div>
+
+        <p style="font-size: 16px; color: #333; line-height: 1.6;">إذا كنتِ بحاجة لأي مساعدة أو ترغبين في تمديد وتعديل الخدمة، يسعدنا تواصلكِ معنا مباشرة.</p>
+        
+        <div style="text-align: center; margin-top: 30px; border-top: 1px solid #ddd; padding-top: 20px;">
+          <p style="font-size: 14px; color: #777;">شكراً لكِ،<br/><strong>ايلا ميديا للتصوير السينمائي</strong></p>
+        </div>
+      </div>
+    `;
+  } else if (newStatus === "refunded") {
+    subject = `مسترجع - استرداد مدفوعات حجزك لدى ايلا ميديا`;
+    htmlContent = `
+      <div style="font-family: Arial, sans-serif; direction: rtl; text-align: right; max-width: 600px; margin: 0 auto; border: 1px solid #FFB8CC; border-radius: 10px; padding: 25px; background-color: #fff;">
+        <h2 style="color: #db2777; border-bottom: 2px solid #FFB8CC; padding-bottom: 10px; text-align: center;">إشعار استرداد المبلغ المدفوع 💸</h2>
+        <p style="font-size: 16px; color: #333; line-height: 1.6;">مرحباً <strong>${clientName}</strong>،</p>
+        <p style="font-size: 16px; color: #333; line-height: 1.6;">يسعدنا إبلاغكِ بأنه تم استرداد المبالغ المدفوعة لحجز جلسة التصوير الخاصة بكِ بنجاح.</p>
+        
+        <div style="background-color: #fdf2f8; padding: 15px; border-radius: 8px; margin: 20px 0; border: 1px solid #fbcfe8;">
+          <p style="margin: 8px 0; font-size: 15px;">• <strong>الباقة الملغاة:</strong> ${packageName}</p>
+          <p style="margin: 8px 0; font-size: 15px;">• <strong>تاريخ الحجز:</strong> ${eventDate}</p>
+          <p style="margin: 8px 0; font-size: 15px;">• <strong>حالة الدفعة:</strong> مسترجعة بالكامل / Refunded</p>
+        </div>
+
+        <p style="font-size: 16px; color: #333; line-height: 1.6;">قد يستغرق ظهور المبلغ في حسابك البنكي بضعة أيام عمل وذلك حسب سياسة البنك المصدر لبطاقتك وبوابة Tamara للدفع.</p>
+        
+        <div style="text-align: center; margin-top: 30px; border-top: 1px solid #ddd; padding-top: 20px;">
+          <p style="font-size: 14px; color: #777;"><strong>فريق ايلا ميديا للتصوير السينمائي</strong></p>
         </div>
       </div>
     `;
@@ -137,8 +179,8 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     booking.status = newStatus;
     await booking.save();
 
-    // If status changed to confirmed, completed, or cancelled, send email to client
-    const notifyStatuses = ["confirmed", "completed", "cancelled"];
+    // Send email to client if status changed to a tracked value
+    const notifyStatuses = ["confirmed", "completed", "cancelled", "expired", "refunded"];
     if (newStatus !== oldStatus && notifyStatuses.includes(newStatus)) {
       await sendClientStatusEmail(booking, newStatus);
     }

@@ -10,7 +10,6 @@ async function sendAdminNewBookingEmail(booking: any) {
   const mailPass = process.env.SMTP_PASS;
   const adminEmail = process.env.ADMIN_EMAIL;
 
-  // Check if SMTP is configured
   if (!mailHost || !mailUser || !mailPass || !adminEmail) {
     console.log("[ADMIN NEW BOOKING EMAIL] SMTP not configured. Skipping email alert.");
     return;
@@ -23,7 +22,6 @@ async function sendAdminNewBookingEmail(booking: any) {
   const eventDate = booking.event_date || "غير محدد";
   const venue = booking.venue_location || "غير محدد";
   const packageName = booking.package;
-  const additional = booking.additional_services || "لا يوجد";
   const notes = booking.notes || "لا يوجد";
   const paymentMethodLabel = booking.payment_method === "tamara" ? "تمارا" : booking.payment_method === "mada" ? "مدى" : "بطاقة";
   const paymentStatusLabel = booking.payment_status === "authorized" ? "تم تفويض الدفع" : booking.payment_status === "paid" ? "مدفوع" : "قيد الانتظار";
@@ -107,6 +105,72 @@ async function sendAdminNewBookingEmail(booking: any) {
   }
 }
 
+// Helper function to send receipt email to the client upon creation
+async function sendClientNewBookingEmail(booking: any) {
+  const mailHost = process.env.SMTP_HOST;
+  const mailPort = parseInt(process.env.SMTP_PORT || "587");
+  const mailUser = process.env.SMTP_USER;
+  const mailPass = process.env.SMTP_PASS;
+
+  if (!mailHost || !mailUser || !mailPass || !booking.email) {
+    console.log("[CLIENT NEW BOOKING EMAIL] SMTP not configured or client email missing.");
+    return;
+  }
+
+  const clientName = booking.client_name;
+  const packageName = booking.package;
+  const eventDate = booking.event_date || "غير محدد";
+  const orderRef = booking._id.toString();
+
+  const subject = `تم استلام طلب حجزك بنجاح - ايلا ميديا`;
+  const htmlContent = `
+    <div style="font-family: Arial, sans-serif; direction: rtl; text-align: right; max-width: 600px; margin: 0 auto; border: 1px solid #FFB8CC; border-radius: 10px; padding: 25px; background-color: #fff;">
+      <h2 style="color: #db2777; border-bottom: 2px solid #FFB8CC; padding-bottom: 10px; text-align: center;">تم استلام طلب حجزك بنجاح 🎉</h2>
+      <p style="font-size: 16px; color: #333; line-height: 1.6;">عزيزتي <strong>${clientName}</strong>،</p>
+      <p style="font-size: 16px; color: #333; line-height: 1.6;">شكراً لكِ لتواصلكِ مع فريقنا. لقد تم استلام طلب حجزك وتفاصيل مناسبتك بنجاح عبر موقعنا الإلكتروني.</p>
+      
+      <div style="background-color: #fff0f5; padding: 15px; border-radius: 8px; margin: 20px 0; border: 1px dashed #FFB8CC;">
+        <h3 style="margin-top: 0; color: #db2777; font-size: 16px;">تفاصيل طلب الحجز:</h3>
+        <p style="margin: 8px 0; font-size: 15px;">• <strong>رقم الحجز:</strong> ${orderRef}</p>
+        <p style="margin: 8px 0; font-size: 15px;">• <strong>الباقة المختارة:</strong> ${packageName}</p>
+        <p style="margin: 8px 0; font-size: 15px;">• <strong>تاريخ الحجز:</strong> ${eventDate}</p>
+        <p style="margin: 8px 0; font-size: 15px;">• <strong>حالة الطلب:</strong> قيد المراجعة / الانتظار</p>
+      </div>
+
+      <p style="font-size: 16px; color: #333; line-height: 1.6;">سيقوم فريق <strong>ايلا ميديا للتصوير السينمائي</strong> بمراجعة تفاصيل طلبك وجدول المواعيد، وسنتواصل معكِ قريباً لتأكيد الموعد النهائي والتنسيق.</p>
+      
+      <div style="text-align: center; margin-top: 30px; border-top: 1px solid #ddd; padding-top: 20px;">
+        <p style="font-size: 14px; color: #777;">مع كل الحب،<br/><strong>فريق ايلا ميديا للتصوير السينمائي</strong></p>
+      </div>
+    </div>
+  `;
+
+  try {
+    const transporter = nodemailer.createTransport({
+      host: mailHost,
+      port: mailPort,
+      secure: mailPort === 465,
+      auth: {
+        user: mailUser,
+        pass: mailPass
+      },
+      tls: {
+        rejectUnauthorized: false
+      }
+    });
+
+    await transporter.sendMail({
+      from: `"ايلا ميديا للتصوير السينمائي" <${mailUser}>`,
+      to: booking.email,
+      subject: subject,
+      html: htmlContent
+    });
+    console.log(`[CLIENT NEW BOOKING EMAIL SUCCESS] Receipt email sent to client: ${booking.email}`);
+  } catch (error) {
+    console.error("[CLIENT NEW BOOKING EMAIL ERROR] Failed to send receipt email to client:", error);
+  }
+}
+
 export async function POST(request: Request) {
   try {
     const data = await request.json();
@@ -135,9 +199,14 @@ export async function POST(request: Request) {
       amount: data.amount || 0
     });
 
-    // Send email alert to admin (non-blocking for client response)
+    // Send email alert to admin (non-blocking)
     sendAdminNewBookingEmail(newBooking).catch(err => {
       console.error("[ADMIN EMAIL ERROR] Failed to send new booking alert asynchronously:", err);
+    });
+
+    // Send receipt email to client (non-blocking)
+    sendClientNewBookingEmail(newBooking).catch(err => {
+      console.error("[CLIENT EMAIL ERROR] Failed to send client receipt alert asynchronously:", err);
     });
 
     return NextResponse.json({ success: true, id: newBooking._id.toString() });
