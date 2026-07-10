@@ -9,6 +9,7 @@ export default function ContactForm() {
   const { t, isRtl } = useLanguage();
   const settings = useSettings();
   const searchParams = useSearchParams();
+  const [bookingPath, setBookingPath] = useState<"choice" | "inquiry">("choice");
   const [pkg, setPkg] = useState("essential");
   const [services, setServices] = useState<string[]>([]);
   const [addons, setAddons] = useState<any[]>([]);
@@ -18,7 +19,10 @@ export default function ContactForm() {
 
   useEffect(() => {
     const p = searchParams.get("package");
-    if (p) setPkg(p);
+    if (p) {
+      setPkg(p);
+      setBookingPath("inquiry");
+    }
 
     fetch("/api/addons").then(r => r.json()).then(data => {
       if (Array.isArray(data)) setAddons(data);
@@ -111,6 +115,62 @@ export default function ContactForm() {
       </div>
     </div>
   );
+
+  if (bookingPath === "choice") {
+    return (
+      <div className="page" style={{ minHeight: "90vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "120px var(--px) 60px" }}>
+        <div className="card anim-scale-in" style={{ textAlign: "center", maxWidth: 640, width: "100%", padding: "50px 32px", background: "var(--bg-3)", border: "1px solid var(--border-pink)", borderRadius: 24 }}>
+          <span className="eyebrow" style={{ marginBottom: 12, display: "block" }}>{isRtl ? "احجز موعدك الآن" : "Secure Your Date Now"}</span>
+          <h2 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(24px, 4vw, 36px)", fontWeight: 700, color: "var(--text)", marginBottom: 16 }}>
+            {isRtl ? "كيف ترغب في إتمام الحجز؟" : "How would you like to proceed?"}
+          </h2>
+          <p style={{ fontSize: 16, color: "var(--text-muted)", lineHeight: 1.75, marginBottom: 40, maxWidth: 480, marginLeft: "auto", marginRight: "auto" }}>
+            {isRtl 
+              ? "اختر مسار الحجز المناسب لكِ، سواء للاستفسار وحجز موعد مبدئي بدون دفع، أو لشراء باقة تصوير مباشرة ودفع عربون الحجز." 
+              : "Choose the path that suits you: submit a free booking inquiry, or select a package and complete payment now."}
+          </p>
+
+          <div className="choice-buttons-container" style={{ display: "flex", gap: 24, justifyContent: "center" }}>
+            {/* Option 1: Inquiry only */}
+            <button 
+              onClick={() => setBookingPath("inquiry")}
+              className="card-hover-effect"
+              style={{
+                flex: 1, padding: "32px 24px", borderRadius: 16, border: "1px solid var(--border)", background: "rgba(255,255,255,0.01)",
+                cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 14, transition: "all 0.3s ease"
+              }}
+            >
+              <div style={{ width: 56, height: 56, borderRadius: "50%", background: "rgba(255,255,255,0.04)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <span className="icon" style={{ fontSize: 28, color: "var(--text-dim)" }}>event_note</span>
+              </div>
+              <div style={{ textAlign: "center" }}>
+                <h3 style={{ fontSize: 18, fontWeight: 700, color: "var(--text)", marginBottom: 8 }}>{isRtl ? "حجز مبدئي / استفسار" : "Booking Inquiry"}</h3>
+                <p style={{ fontSize: 12, color: "var(--text-muted)", lineHeight: 1.5 }}>{isRtl ? "تقديم طلب حجز وتفاصيل مناسبتك للتواصل والتنسيق بدون دفع أي مبالغ الآن." : "Submit an inquiry with your wedding details to coordinate with us without any upfront payment."}</p>
+              </div>
+            </button>
+
+            {/* Option 2: Choose package and pay */}
+            <Link 
+              href="/checkout"
+              className="card-hover-effect"
+              style={{
+                flex: 1, padding: "32px 24px", borderRadius: 16, border: "1px solid var(--border-pink)", background: "rgba(255,176,204,0.04)",
+                cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 14, textDecoration: "none", transition: "all 0.3s ease"
+              }}
+            >
+              <div style={{ width: 56, height: 56, borderRadius: "50%", background: "rgba(255,176,204,0.15)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <span className="icon" style={{ fontSize: 28, color: "var(--pink)" }}>shopping_bag</span>
+              </div>
+              <div style={{ textAlign: "center" }}>
+                <h3 style={{ fontSize: 18, fontWeight: 700, color: "var(--pink)", marginBottom: 8 }}>{isRtl ? "شراء باقة وتأكيد الحجز" : "Book & Choose Package"}</h3>
+                <p style={{ fontSize: 12, color: "var(--text-muted)", lineHeight: 1.5 }}>{isRtl ? "اختيار باقة التصوير السينمائية المناسبة لكِ وتأكيد الحجز مباشرة عبر الدفع الإلكتروني (مدى/تمارا)." : "Select your desired cinematic package and secure your date instantly via online payment (Mada/Tamara)."}</p>
+              </div>
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="page" style={{ paddingTop: 100, paddingBottom: "var(--section-py)" }}>
@@ -259,6 +319,17 @@ export default function ContactForm() {
       <style>{`
         @media(max-width:900px){
           .contact-grid { grid-template-columns: 1fr !important; }
+        }
+        @media(max-width:600px){
+          .choice-buttons-container { flex-direction: column !important; gap: 16px !important; }
+        }
+        .card-hover-effect {
+          transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        }
+        .card-hover-effect:hover {
+          transform: translateY(-4px) !important;
+          border-color: var(--pink) !important;
+          box-shadow: 0 10px 20px rgba(255, 176, 204, 0.05) !important;
         }
       `}</style>
     </div>
