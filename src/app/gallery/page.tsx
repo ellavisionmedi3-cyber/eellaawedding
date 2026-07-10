@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     "Explore our curated selection of weddings across Saudi Arabia. Each frame is a masterpiece of light, emotion, and exclusivity, tailored for the modern bride.",
 };
 
-export const dynamic = "force-dynamic";
+export const revalidate = 30;
 
 export default async function GalleryPage() {
   await connectToDatabase();

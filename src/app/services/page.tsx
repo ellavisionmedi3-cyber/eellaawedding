@@ -1,7 +1,7 @@
 import connectToDatabase, { Service } from "@/lib/db";
 import ServicesClient from "./ServicesClient";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 30;
 
 export default async function ServicesPage() {
   await connectToDatabase();

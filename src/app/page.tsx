@@ -11,6 +11,8 @@ export const metadata: Metadata = {
     "Exclusive female-only wedding photography for the modern Saudi bride. Capturing every whispered secret and luminous moment with cinematic precision.",
 };
 
+export const revalidate = 30;
+
 import connectToDatabase, { GalleryItem } from "@/lib/db";
 
 export default async function HomePage() {

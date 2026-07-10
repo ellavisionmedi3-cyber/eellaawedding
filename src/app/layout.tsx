@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Playfair_Display, Manrope } from "next/font/google";
 import "./globals.css";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 30; // Revalidate layouts/settings from database every 30 seconds
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import ScrollReveal from "@/components/layout/ScrollReveal";
