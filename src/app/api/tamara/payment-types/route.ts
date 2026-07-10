@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
+  // Route to securely verify customer eligibility for Tamara payment plans
   try {
     const body = await request.json();
     const { country, phone, currency, order_value } = body;
