@@ -18,6 +18,7 @@ export async function POST(request: Request) {
       mobile: data.mobile,
       email: data.email || "",
       event_type: data.event_type,
+      event_date: data.event_date || "",
       venue_location: data.venue_location || "",
       package: data.package,
       additional_services: data.additional_services || "",

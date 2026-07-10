@@ -2,6 +2,7 @@
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import Script from "next/script";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSettings } from "@/context/SettingsContext";
 
@@ -46,8 +47,33 @@ function CheckoutContent() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isCancel, setIsCancel] = useState(false);
+  const [isFailure, setIsFailure] = useState(false);
   const [orderId, setOrderId] = useState("");
 
+  // Tamara eligibility states
+  const [isEligible, setIsEligible] = useState<boolean | null>(null);
+  const [checkingEligibility, setCheckingEligibility] = useState(false);
+  const [eligibilityError, setEligibilityError] = useState("");
+
+  // Read URL query parameters for return states (success, cancel, failure)
+  useEffect(() => {
+    const successParam = searchParams.get("success");
+    const cancelParam = searchParams.get("cancel");
+    const failureParam = searchParams.get("failure");
+    const orderParam = searchParams.get("order");
+
+    if (successParam === "true") {
+      setIsSuccess(true);
+      if (orderParam) setOrderId(orderParam);
+    } else if (cancelParam === "true") {
+      setIsCancel(true);
+    } else if (failureParam === "true") {
+      setIsFailure(true);
+    }
+  }, [searchParams]);
+
+  // Fetch packages on mount/search param change
   useEffect(() => {
     // Fetch packages to find the selected one
     fetch("/api/packages")
@@ -62,6 +88,90 @@ function CheckoutContent() {
       })
       .catch((err) => console.error(err));
   }, [searchParams]);
+
+  // Setup window.tamaraWidgetConfig dynamically
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.tamaraWidgetConfig = {
+        lang: isRtl ? "ar" : "en",
+        country: "SA",
+        publicKey: process.env.NEXT_PUBLIC_TAMARA_PUBLIC_KEY || "43d6d648-4f13-48cb-b330-2bc018ae0f22",
+        style: {
+          fontSize: "13px",
+          badgeRatio: 1.1
+        }
+      };
+
+      if (window.TamaraWidgetV2) {
+        window.TamaraWidgetV2.refresh();
+      }
+    }
+  }, [selectedPkg?.price, isRtl]);
+
+  // Check eligibility for Tamara with a debounce of 600ms
+  useEffect(() => {
+    if (paymentMethod === "tamara" && selectedPkg && formData.mobile) {
+      const checkEligibility = async () => {
+        const cleanPhone = formData.mobile.replace(/\s+/g, "");
+        if (cleanPhone.length < 9) {
+          setIsEligible(null);
+          setEligibilityError("");
+          return;
+        }
+
+        setCheckingEligibility(true);
+        setEligibilityError("");
+
+        try {
+          const res = await fetch("/api/tamara/payment-types", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              country: "SA",
+              phone: cleanPhone,
+              currency: "SAR",
+              order_value: selectedPkg.price
+            })
+          });
+
+          const data = await res.json();
+          if (res.ok) {
+            setIsEligible(data.eligible);
+            if (!data.eligible) {
+              setEligibilityError(isRtl 
+                ? "عذرًا، العميل غير مؤهل لخدمة تمارا لهذا المبلغ أو رقم الجوال." 
+                : "Sorry, you are not eligible for Tamara with this amount or phone number."
+              );
+            }
+          } else {
+            setIsEligible(false);
+            setEligibilityError(isRtl 
+              ? "فشل التحقق من الأهلية، يرجى التأكد من صحة رقم الجوال." 
+              : "Eligibility check failed, please verify the phone number is correct."
+            );
+          }
+        } catch (err) {
+          console.error("Eligibility check error:", err);
+          setIsEligible(false);
+          setEligibilityError(isRtl 
+            ? "حدث خطأ في الاتصال، يرجى المحاولة لاحقاً." 
+            : "Connection error, please try again later."
+          );
+        } finally {
+          setCheckingEligibility(false);
+        }
+      };
+
+      const timer = setTimeout(() => {
+        checkEligibility();
+      }, 600);
+
+      return () => clearTimeout(timer);
+    } else {
+      setIsEligible(null);
+      setEligibilityError("");
+    }
+  }, [paymentMethod, formData.mobile, selectedPkg?.price, isRtl]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -121,9 +231,8 @@ function CheckoutContent() {
         const generatedId = result.id || "ORD-" + Math.floor(100000 + Math.random() * 900000);
         setOrderId(generatedId);
 
-        // 2. If Tamara is selected, simulate Tamara checkout API request
+        // 2. If Tamara is selected, redirect to Tamara checkout API URL
         if (paymentMethod === "tamara") {
-          // Call Tamara Mock API
           const tamaraRes = await fetch("/api/tamara/checkout", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -135,21 +244,22 @@ function CheckoutContent() {
                 phone: formData.mobile,
                 email: formData.email
               },
-              package: selectedPkg.name
+              packageName: selectedPkg.name
             })
           });
 
           const tamaraData = await tamaraRes.json();
           
           if (tamaraData.checkout_url) {
-            // In a real production scenario, we would redirect the client:
-            // window.location.href = tamaraData.checkout_url;
-            
-            // For Tamara sandbox or review, we show a premium mock portal redirect
-            setTimeout(() => {
-              setIsSuccess(true);
-              setIsSubmitting(false);
-            }, 1500);
+            window.location.href = tamaraData.checkout_url;
+            return;
+          } else {
+            console.error("Tamara Checkout API Error: ", tamaraData);
+            alert(isRtl 
+              ? "فشل تحويلك لبوابة دفع تمارا. يرجى المحاولة لاحقاً." 
+              : "Failed to redirect to Tamara gateway. Please try again."
+            );
+            setIsSubmitting(false);
             return;
           }
         }
@@ -174,6 +284,56 @@ function CheckoutContent() {
     const inst = (price / 3).toFixed(2);
     return parseFloat(inst).toLocaleString();
   };
+
+  if (isCancel) {
+    return (
+      <div className="page" style={{ minHeight: "90vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "120px var(--px) 60px" }}>
+        <div className="card anim-scale-in" style={{ textAlign: "center", maxWidth: 540, padding: "50px 40px", background: "var(--bg-3)", border: "1px solid #FF9E00" }}>
+          <div style={{ width: 80, height: 80, borderRadius: "50%", background: "rgba(255,158,0,0.15)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 32px" }}>
+            <span className="icon icon-fill" style={{ fontSize: 40, color: "#FF9E00" }}>warning</span>
+          </div>
+          <h2 style={{ fontFamily: "var(--font-display)", fontSize: 32, fontWeight: 700, color: "var(--text)", marginBottom: 16 }}>
+            {isRtl ? "تم إلغاء عملية الدفع" : "Payment Cancelled"}
+          </h2>
+          <p style={{ fontSize: 16, color: "var(--text-muted)", lineHeight: 1.75, marginBottom: 36 }}>
+            {isRtl 
+              ? "لقد قمت بإلغاء عملية الدفع عبر تمارا. يمكنك محاولة الحجز مرة أخرى أو اختيار طريقة دفع بديلة." 
+              : "You have cancelled the payment process. You can try booking again or select a different payment method."}
+          </p>
+          <div style={{ display: "flex", gap: 16, justifyContent: "center" }}>
+            <button onClick={() => { setIsCancel(false); router.replace("/checkout"); }} className="btn btn-primary" style={{ flex: 1 }}>
+              {isRtl ? "إعادة المحاولة" : "Try Again"}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (isFailure) {
+    return (
+      <div className="page" style={{ minHeight: "90vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "120px var(--px) 60px" }}>
+        <div className="card anim-scale-in" style={{ textAlign: "center", maxWidth: 540, padding: "50px 40px", background: "var(--bg-3)", border: "1px solid #ff4d4d" }}>
+          <div style={{ width: 80, height: 80, borderRadius: "50%", background: "rgba(255,77,77,0.15)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 32px" }}>
+            <span className="icon icon-fill" style={{ fontSize: 40, color: "#ff4d4d" }}>error</span>
+          </div>
+          <h2 style={{ fontFamily: "var(--font-display)", fontSize: 32, fontWeight: 700, color: "var(--text)", marginBottom: 16 }}>
+            {isRtl ? "فشلت عملية الدفع" : "Payment Failed"}
+          </h2>
+          <p style={{ fontSize: 16, color: "var(--text-muted)", lineHeight: 1.75, marginBottom: 36 }}>
+            {isRtl 
+              ? "حدث خطأ أثناء معالجة دفعتك عبر تمارا. يرجى المحاولة لاحقاً أو استخدام بطاقة أخرى." 
+              : "An error occurred while processing your payment. Please try again later or use a different card."}
+          </p>
+          <div style={{ display: "flex", gap: 16, justifyContent: "center" }}>
+            <button onClick={() => { setIsFailure(false); router.replace("/checkout"); }} className="btn btn-primary" style={{ flex: 1 }}>
+              {isRtl ? "إعادة المحاولة" : "Try Again"}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (isSuccess) {
     // Premium Success Screen
@@ -343,56 +503,49 @@ function CheckoutContent() {
                   </div>
                 )}
 
-                {/* Tamara BNPL Breakdown Mockup */}
+                {/* Tamara BNPL Breakdown Widget */}
                 {paymentMethod === "tamara" && selectedPkg && (
-                  <div className="anim-fade-up" style={{ marginTop: 20, padding: 24, background: "rgba(255,184,204,0.02)", border: "1px solid rgba(255,184,204,0.1)", borderRadius: 12 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16, flexDirection: isRtl ? "row-reverse" : "row" }}>
+                  <div className="anim-fade-up" style={{ marginTop: 20, padding: 20, background: "rgba(255,184,204,0.02)", border: "1px solid rgba(255,184,204,0.1)", borderRadius: 12 }}>
+                    <Script 
+                      src="https://cdn.tamara.co/widget-v2/tamara-widget.js" 
+                      strategy="afterInteractive"
+                    />
+                    
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12, flexDirection: isRtl ? "row-reverse" : "row" }}>
                       <span className="icon" style={{ color: "#FF9E00", fontSize: 20 }}>payments</span>
-                      <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text)" }}>{isRtl ? "خطة التقسيط مع تمارا:" : "Tamara Installment Schedule:"}</span>
+                      <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text)" }}>{isRtl ? "عرض خطة الدفع مع تمارا:" : "Tamara Payment Options:"}</span>
                     </div>
 
-                    <div style={{ display: "flex", flexDirection: "column", gap: 14, position: "relative" }}>
-                      {/* Step 1 */}
-                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, flexDirection: isRtl ? "row-reverse" : "row" }}>
-                        <div style={{ display: "flex", gap: 10, alignItems: "center", flexDirection: isRtl ? "row-reverse" : "row" }}>
-                          <div style={{ width: 22, height: 22, borderRadius: "50%", background: "#FF9E00", color: "#fff", fontSize: 10, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center" }}>1</div>
-                          <span style={{ color: "var(--text-muted)" }}>{isRtl ? "اليوم (دفعة أولى)" : "Today (First Payment)"}</span>
-                        </div>
-                        <span style={{ fontWeight: 700, color: "var(--text)" }}>{getInstallments(selectedPkg.price)} {t("packages.currency")}</span>
-                      </div>
-
-                      {/* Step 2 */}
-                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, flexDirection: isRtl ? "row-reverse" : "row" }}>
-                        <div style={{ display: "flex", gap: 10, alignItems: "center", flexDirection: isRtl ? "row-reverse" : "row" }}>
-                          <div style={{ width: 22, height: 22, borderRadius: "50%", background: "rgba(255,255,255,0.06)", color: "var(--text-dim)", fontSize: 10, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid var(--border)" }}>2</div>
-                          <span style={{ color: "var(--text-muted)" }}>{isRtl ? "بعد شهر" : "In 1 Month"}</span>
-                        </div>
-                        <span style={{ fontWeight: 700, color: "var(--text-dim)" }}>{getInstallments(selectedPkg.price)} {t("packages.currency")}</span>
-                      </div>
-
-                      {/* Step 3 */}
-                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, flexDirection: isRtl ? "row-reverse" : "row" }}>
-                        <div style={{ display: "flex", gap: 10, alignItems: "center", flexDirection: isRtl ? "row-reverse" : "row" }}>
-                          <div style={{ width: 22, height: 22, borderRadius: "50%", background: "rgba(255,255,255,0.06)", color: "var(--text-dim)", fontSize: 10, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid var(--border)" }}>3</div>
-                          <span style={{ color: "var(--text-muted)" }}>{isRtl ? "بعد شهرين" : "In 2 Months"}</span>
-                        </div>
-                        <span style={{ fontWeight: 700, color: "var(--text-dim)" }}>{getInstallments(selectedPkg.price)} {t("packages.currency")}</span>
-                      </div>
-                    </div>
+                    <tamara-widget
+                      type="tamara-summary"
+                      amount={selectedPkg.price.toString()}
+                      inline-type="2"
+                      config={JSON.stringify({ badgePosition: isRtl ? "left" : "right" })}
+                    />
                   </div>
                 )}
               </div>
+
+              {/* Eligibility Error Warning */}
+              {paymentMethod === "tamara" && eligibilityError && (
+                <div style={{ color: "#ff4d4d", fontSize: 13, textAlign: isRtl ? "right" : "left", marginTop: 8, padding: "10px 14px", background: "rgba(255, 77, 77, 0.08)", borderRadius: 8, border: "1px solid rgba(255, 77, 77, 0.2)", lineHeight: 1.5 }}>
+                  <span className="icon" style={{ fontSize: 16, verticalAlign: "middle", marginInlineEnd: 6 }}>warning</span>
+                  {eligibilityError}
+                </div>
+              )}
 
               {/* Complete checkout button */}
               <button 
                 type="submit" 
                 className="btn btn-primary" 
                 style={{ width: "100%", padding: 16, marginTop: 12, justifyContent: "center", fontSize: 13 }}
-                disabled={isSubmitting || !selectedPkg}
+                disabled={isSubmitting || !selectedPkg || checkingEligibility || (paymentMethod === "tamara" && isEligible === false)}
               >
                 {isSubmitting 
                   ? (isRtl ? "جاري إتمام المعاملة..." : "Processing Order...") 
-                  : (isRtl ? `إتمام الحجز والدفع - ${selectedPkg?.price.toLocaleString()} ر.س` : `Pay & Confirm Booking - ${selectedPkg?.price.toLocaleString()} SAR`)}
+                  : checkingEligibility
+                    ? (isRtl ? "جاري التحقق من الأهلية..." : "Checking Eligibility...")
+                    : (isRtl ? `إتمام الحجز والدفع - ${selectedPkg?.price.toLocaleString()} ر.س` : `Pay & Confirm Booking - ${selectedPkg?.price.toLocaleString()} SAR`)}
               </button>
             </form>
           </div>
