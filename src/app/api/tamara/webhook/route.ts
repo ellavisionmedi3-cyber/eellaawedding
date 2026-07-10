@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import nodemailer from "nodemailer";
 import connectToDatabase, { Booking } from "@/lib/db";
 
-// Helper function to send email and WhatsApp alerts to admin
+// Helper function to send email and WhatsApp alerts to admin, and a receipt email to the client
 async function sendNotificationAlert(booking: any, eventType: string, orderId: string) {
   const mailHost = process.env.SMTP_HOST;
   const mailPort = parseInt(process.env.SMTP_PORT || "587");
@@ -29,8 +29,8 @@ async function sendNotificationAlert(booking: any, eventType: string, orderId: s
 
   const statusText = statusTranslation[eventType] || eventType;
 
-  const emailSubject = `[تمارا] تحديث حالة حجز العميل: ${clientName} (${statusText})`;
-  const emailHtml = `
+  // 1. Prepare Admin Email Html
+  const adminEmailHtml = `
     <div style="font-family: Arial, sans-serif; direction: rtl; text-align: right; max-width: 600px; margin: 0 auto; border: 1px solid #FFB8CC; border-radius: 10px; padding: 20px; background-color: #fff;">
       <h2 style="color: #db2777; border-bottom: 2px solid #FFB8CC; padding-bottom: 10px;">إشعار مدفوعات تمارا (Tamara Payment)</h2>
       <p style="font-size: 16px; color: #333;">تم استقبال تحديث جديد لعملية حجز من بوابة تمارا:</p>
@@ -74,48 +74,92 @@ async function sendNotificationAlert(booking: any, eventType: string, orderId: s
     </div>
   `;
 
-  // 1. Send Email Notification
-  if (mailHost && mailUser && mailPass && adminEmail) {
-    try {
-      const transporter = nodemailer.createTransport({
-        host: mailHost,
-        port: mailPort,
-        secure: mailPort === 465,
-        auth: {
-          user: mailUser,
-          pass: mailPass
-        }
-      });
+  // 2. Prepare Customer Receipt Email Html
+  const clientEmailHtml = `
+    <div style="font-family: Arial, sans-serif; direction: rtl; text-align: right; max-width: 600px; margin: 0 auto; border: 1px solid #FFB8CC; border-radius: 10px; padding: 25px; background-color: #fff;">
+      <h2 style="color: #db2777; border-bottom: 2px solid #FFB8CC; padding-bottom: 10px; text-align: center;">تم استلام طلب الحجز والدفع 🎉</h2>
+      <p style="font-size: 16px; color: #333; line-height: 1.6;">عزيزتي <strong>${clientName}</strong>،</p>
+      <p style="font-size: 16px; color: #333; line-height: 1.6;">شكراً لكِ. لقد تلقينا طلب حجزك بنجاح من خلال خيار الدفع تمارا. طلبك الآن قيد المعالجة وسيتم التحقق منه وتأكيده قريباً من قبل فريقنا.</p>
+      
+      <div style="background-color: #fff0f5; padding: 15px; border-radius: 8px; margin: 20px 0; border: 1px dashed #FFB8CC;">
+        <h3 style="margin-top: 0; color: #db2777; font-size: 16px;">تفاصيل طلب الحجز:</h3>
+        <p style="margin: 8px 0; font-size: 15px;">• <strong>رقم الحجز:</strong> ${orderRef}</p>
+        <p style="margin: 8px 0; font-size: 15px;">• <strong>الباقة المختارة:</strong> ${packageName}</p>
+        <p style="margin: 8px 0; font-size: 15px;">• <strong>تاريخ الحجز:</strong> ${eventDate}</p>
+        <p style="margin: 8px 0; font-size: 15px;">• <strong>حالة الدفع:</strong> ${statusText}</p>
+      </div>
 
-      await transporter.sendMail({
-        from: `"${clientName} via website" <${mailUser}>`,
-        to: adminEmail,
-        subject: emailSubject,
-        html: emailHtml
-      });
-      console.log(`[TAMARA WEBHOOK ALERT] Email sent successfully to ${adminEmail}`);
-    } catch (mailError) {
-      console.error("[TAMARA WEBHOOK ALERT] Failed to send email alert:", mailError);
-    }
-  } else {
-    console.log("[TAMARA WEBHOOK ALERT] SMTP mail credentials are not fully configured in env.");
+      <p style="font-size: 16px; color: #333; line-height: 1.6;">يتطلع فريق <strong>ايلا ميديا للتصوير السينمائي</strong> لتوثيق لحظاتك الفريدة بجودة وسينمائية مميزة. سنقوم بالتواصل معكِ قريباً لمتابعة التفاصيل.</p>
+      
+      <div style="text-align: center; margin-top: 30px; border-top: 1px solid #ddd; padding-top: 20px;">
+        <p style="font-size: 14px; color: #777;">مع كل الحب،<br/><strong>فريق ايلا ميديا للتصوير السينمائي</strong></p>
+      </div>
+    </div>
+  `;
+
+  // Initialize transporter if credentials exist
+  let transporter = null;
+  if (mailHost && mailUser && mailPass) {
+    transporter = nodemailer.createTransport({
+      host: mailHost,
+      port: mailPort,
+      secure: mailPort === 465,
+      auth: {
+        user: mailUser,
+        pass: mailPass
+      },
+      tls: {
+        rejectUnauthorized: false
+      }
+    });
   }
 
-  // 2. Send WhatsApp Notification
+  // Send Email Notification to Admin
+  if (transporter && adminEmail) {
+    try {
+      await transporter.sendMail({
+        from: `"${clientName} via Ayla Media" <${mailUser}>`,
+        to: adminEmail,
+        subject: `[تمارا] تم استلام دفعة جديدة من العميل: ${clientName} (${statusText})`,
+        html: adminEmailHtml
+      });
+      console.log(`[TAMARA WEBHOOK ALERT] Admin email sent successfully to ${adminEmail}`);
+    } catch (mailError) {
+      console.error("[TAMARA WEBHOOK ALERT] Failed to send admin email alert:", mailError);
+    }
+  }
+
+  // Send Receipt Email to Customer (only for success payment events: approved, authorized, captured)
+  const isSuccessPayment = ["approved", "order_approved", "authorized", "order_authorized", "captured", "order_captured"].includes(eventType);
+  if (transporter && booking.email && isSuccessPayment) {
+    try {
+      await transporter.sendMail({
+        from: `"ايلا ميديا للتصوير السينمائي" <${mailUser}>`,
+        to: booking.email,
+        subject: `تم استلام طلب حجزك بنجاح - ايلا ميديا`,
+        html: clientEmailHtml
+      });
+      console.log(`[TAMARA WEBHOOK ALERT] Customer receipt email sent successfully to ${booking.email}`);
+    } catch (clientMailError) {
+      console.error("[TAMARA WEBHOOK ALERT] Failed to send customer receipt email:", clientMailError);
+    }
+  }
+
+  // 3. Send WhatsApp Notification to Admin
   const waApiUrl = process.env.WHATSAPP_API_URL;
   const waToken = process.env.WHATSAPP_TOKEN;
   const waTo = process.env.WHATSAPP_TO;
 
   if (waApiUrl && waToken && waTo) {
     try {
-      const waMsg = `📢 *إشعار تمارا جديد* 📢\n\n` +
+      const waMsg = `📢 *إشعار تمارا جديد (ايلا ميديا)* 📢\n\n` +
         `• *اسم العميلة:* ${clientName}\n` +
         `• *رقم الجوال:* ${clientMobile}\n` +
         `• *تاريخ الحجز:* ${eventDate}\n` +
         `• *الباقة:* ${packageName}\n` +
         `• *حالة الدفع:* ${statusText}\n` +
         `• *رقم طلب تمارا:* ${orderId}\n` +
-        `• *رقم الحجز:* ${booking._id.toString()}\n\n` +
+        `• *رقم الحجز:* ${orderRef}\n\n` +
         `رابط المحادثة مباشرة: https://wa.me/${clientMobile.replace(/[^0-9]/g, "")}`;
 
       const response = await fetch(waApiUrl, {
@@ -139,8 +183,6 @@ async function sendNotificationAlert(booking: any, eventType: string, orderId: s
     } catch (waError) {
       console.error("[TAMARA WEBHOOK ALERT] Failed to send WhatsApp alert:", waError);
     }
-  } else {
-    console.log("[TAMARA WEBHOOK ALERT] WhatsApp credentials are not configured in env.");
   }
 }
 
