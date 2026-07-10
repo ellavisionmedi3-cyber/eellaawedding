@@ -19,7 +19,7 @@ async function sendTelegramAlert(booking: any, title: string, statusText: string
   const eventDate = booking.event_date || "غير محدد";
   const venue = booking.venue_location || "غير محدد";
   const packageName = booking.package;
-  const paymentMethod = booking.payment_method === "tamara" ? "تمارا" : booking.payment_method === "mada" ? "مدى" : "بطاقة";
+  const paymentMethod = booking.payment_method === "tamara" ? "تمارا" : booking.payment_method === "mada" ? "مدى" : (booking.payment_method === "cash" ? "كاش / تحويل بنكي" : "بطاقة ائتمانية");
 
   const messageText = 
     `🔔 <b>${title}</b> 🔔\n\n` +

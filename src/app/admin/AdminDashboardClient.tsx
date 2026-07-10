@@ -1508,6 +1508,30 @@ export default function AdminDashboardClient({
                 </div>
               </div>
 
+              {/* Payment Methods Configuration */}
+              <div>
+                <h3 style={s({ fontSize: 16, fontWeight: 600, marginBottom: 16, borderBottom: "1px solid var(--border)", paddingBottom: 12, color: "var(--pink)" })}>{isRtl ? "طرق الدفع المتاحة للعملاء" : "Available Payment Methods"}</h3>
+                <p style={s({ fontSize: 13, color: "var(--text-muted)", marginBottom: 16 })}>{isRtl ? "اختر طرق الدفع التي تريد إظهارها للعملاء في صفحة إتمام الطلب:" : "Select the payment methods you want to show to customers on the checkout page:"}</p>
+                <div style={s({ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fill, minmax(200px, 1fr))", gap: 20 })}>
+                  {[
+                    { key: "payment_method_card", label: isRtl ? "بطاقة ائتمانية (فيزا/ماستر)" : "Credit Card" },
+                    { key: "payment_method_mada", label: isRtl ? "مدى (Mada)" : "Mada Card" },
+                    { key: "payment_method_tamara", label: isRtl ? "تمارا (Tamara)" : "Tamara" },
+                    { key: "payment_method_cash", label: isRtl ? "دفع نقدي / تحويل كاش" : "Cash / Bank Transfer" }
+                  ].map(method => (
+                    <label key={method.key} style={s({ display: "flex", alignItems: "center", gap: 10, padding: 14, border: "1px solid var(--border)", borderRadius: 10, cursor: "pointer", background: "rgba(255,255,255,0.01)", flexDirection: isRtl ? "row-reverse" : "row" })}>
+                      <input 
+                        type="checkbox" 
+                        checked={settingsState[method.key] !== "0"} 
+                        onChange={e => setSettingsState({ ...settingsState, [method.key]: e.target.checked ? "1" : "0" })}
+                        style={{ width: 16, height: 16 }}
+                      />
+                      <span style={s({ fontSize: 13, color: "var(--text)" })}>{method.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
               {/* Administrative Access */}
               <div>
                 <h3 style={s({ fontSize: 16, fontWeight: 600, marginBottom: 16, borderBottom: "1px solid var(--border)", paddingBottom: 12, color: "var(--pink)" })}>{isRtl ? "بيانات الدخول للوحة التحكم" : "Admin Dashboard Access"}</h3>

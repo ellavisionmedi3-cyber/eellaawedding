@@ -26,7 +26,18 @@ function CheckoutContent() {
 
   const [packages, setPackages] = useState<Package[]>([]);
   const [selectedPkg, setSelectedPkg] = useState<Package | null>(null);
+  
+  const showCard = settings.payment_method_card !== "0";
+  const showMada = settings.payment_method_mada !== "0";
+  const showTamara = settings.payment_method_tamara !== "0";
+  const showCash = settings.payment_method_cash !== "0";
+
+  const defaultMethod = showCard ? "card" : (showMada ? "mada" : (showTamara ? "tamara" : (showCash ? "cash" : "card")));
   const [paymentMethod, setPaymentMethod] = useState<"card" | "mada" | "tamara" | "cash">("card");
+
+  useEffect(() => {
+    setPaymentMethod(defaultMethod);
+  }, [defaultMethod]);
   const [formData, setFormData] = useState({
     name: "",
     mobile: "",
@@ -445,56 +456,64 @@ function CheckoutContent() {
                 
                 <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                   {/* Option 1: Credit Card */}
-                  <label style={{
-                    display: "flex", alignItems: "center", gap: 14, padding: "16px 20px", borderRadius: 10, border: paymentMethod === "card" ? "1px solid var(--pink)" : "1px solid var(--border)", background: "rgba(255,255,255,0.02)", cursor: "pointer", flexDirection: isRtl ? "row-reverse" : "row"
-                  }}>
-                    <input type="radio" checked={paymentMethod === "card"} onChange={() => setPaymentMethod("card")} style={{ width: 18, height: 18 }} />
-                    <div style={{ flex: 1, display: "flex", justifyContent: "space-between", alignItems: "center", flexDirection: isRtl ? "row-reverse" : "row" }}>
-                      <span style={{ fontSize: 14, fontWeight: 600 }}>{isRtl ? "بطاقة ائتمانية (فيزا / ماستركارد)" : "Credit Card (Visa / Mastercard)"}</span>
-                      <span className="icon" style={{ fontSize: 24, color: "var(--text-dim)" }}>credit_card</span>
-                    </div>
-                  </label>
+                  {showCard && (
+                    <label style={{
+                      display: "flex", alignItems: "center", gap: 14, padding: "16px 20px", borderRadius: 10, border: paymentMethod === "card" ? "1px solid var(--pink)" : "1px solid var(--border)", background: "rgba(255,255,255,0.02)", cursor: "pointer", flexDirection: isRtl ? "row-reverse" : "row"
+                    }}>
+                      <input type="radio" checked={paymentMethod === "card"} onChange={() => setPaymentMethod("card")} style={{ width: 18, height: 18 }} />
+                      <div style={{ flex: 1, display: "flex", justifyContent: "space-between", alignItems: "center", flexDirection: isRtl ? "row-reverse" : "row" }}>
+                        <span style={{ fontSize: 14, fontWeight: 600 }}>{isRtl ? "بطاقة ائتمانية (فيزا / ماستركارد)" : "Credit Card (Visa / Mastercard)"}</span>
+                        <span className="icon" style={{ fontSize: 24, color: "var(--text-dim)" }}>credit_card</span>
+                      </div>
+                    </label>
+                  )}
 
                   {/* Option 2: Mada */}
-                  <label style={{
-                    display: "flex", alignItems: "center", gap: 14, padding: "16px 20px", borderRadius: 10, border: paymentMethod === "mada" ? "1px solid var(--pink)" : "1px solid var(--border)", background: "rgba(255,255,255,0.02)", cursor: "pointer", flexDirection: isRtl ? "row-reverse" : "row"
-                  }}>
-                    <input type="radio" checked={paymentMethod === "mada"} onChange={() => setPaymentMethod("mada")} style={{ width: 18, height: 18 }} />
-                    <div style={{ flex: 1, display: "flex", justifyContent: "space-between", alignItems: "center", flexDirection: isRtl ? "row-reverse" : "row" }}>
-                      <span style={{ fontSize: 14, fontWeight: 600 }}>{isRtl ? "مدى (Mada)" : "Mada"}</span>
-                      <span style={{ fontWeight: 800, fontSize: 11, color: "var(--pink)", letterSpacing: 1 }}>mada</span>
-                    </div>
-                  </label>
+                  {showMada && (
+                    <label style={{
+                      display: "flex", alignItems: "center", gap: 14, padding: "16px 20px", borderRadius: 10, border: paymentMethod === "mada" ? "1px solid var(--pink)" : "1px solid var(--border)", background: "rgba(255,255,255,0.02)", cursor: "pointer", flexDirection: isRtl ? "row-reverse" : "row"
+                    }}>
+                      <input type="radio" checked={paymentMethod === "mada"} onChange={() => setPaymentMethod("mada")} style={{ width: 18, height: 18 }} />
+                      <div style={{ flex: 1, display: "flex", justifyContent: "space-between", alignItems: "center", flexDirection: isRtl ? "row-reverse" : "row" }}>
+                        <span style={{ fontSize: 14, fontWeight: 600 }}>{isRtl ? "مدى (Mada)" : "Mada"}</span>
+                        <span style={{ fontWeight: 800, fontSize: 11, color: "var(--pink)", letterSpacing: 1 }}>mada</span>
+                      </div>
+                    </label>
+                  )}
 
                   {/* Option 3: Tamara (Buy Now Pay Later) */}
-                  <label style={{
-                    display: "flex", alignItems: "center", gap: 14, padding: "16px 20px", borderRadius: 10, border: paymentMethod === "tamara" ? "1px solid #FFB8CC" : "1px solid var(--border)", background: paymentMethod === "tamara" ? "rgba(255,184,204,0.04)" : "rgba(255,255,255,0.02)", cursor: "pointer", flexDirection: isRtl ? "row-reverse" : "row"
-                  }}>
-                    <input type="radio" checked={paymentMethod === "tamara"} onChange={() => setPaymentMethod("tamara")} style={{ width: 18, height: 18 }} />
-                    <div style={{ flex: 1, display: "flex", justifyContent: "space-between", alignItems: "center", flexDirection: isRtl ? "row-reverse" : "row" }}>
-                      <div style={{ display: "flex", flexDirection: "column", gap: 4, alignItems: isRtl ? "flex-end" : "flex-start" }}>
-                        <span style={{ fontSize: 14, fontWeight: 700 }}>{isRtl ? "تمارا | قسّم دفعاتك بدون فوائد" : "Tamara | Split in 3 interest-free payments"}</span>
-                        <span style={{ fontSize: 11, color: "var(--text-muted)" }}>{isRtl ? "ادفع 1/3 اليوم والباقي على شهرين بدون فوائد ورسوم" : "Pay 1/3 today and the rest over 2 months."}</span>
+                  {showTamara && (
+                    <label style={{
+                      display: "flex", alignItems: "center", gap: 14, padding: "16px 20px", borderRadius: 10, border: paymentMethod === "tamara" ? "1px solid #FFB8CC" : "1px solid var(--border)", background: paymentMethod === "tamara" ? "rgba(255,184,204,0.04)" : "rgba(255,255,255,0.02)", cursor: "pointer", flexDirection: isRtl ? "row-reverse" : "row"
+                    }}>
+                      <input type="radio" checked={paymentMethod === "tamara"} onChange={() => setPaymentMethod("tamara")} style={{ width: 18, height: 18 }} />
+                      <div style={{ flex: 1, display: "flex", justifyContent: "space-between", alignItems: "center", flexDirection: isRtl ? "row-reverse" : "row" }}>
+                        <div style={{ display: "flex", flexDirection: "column", gap: 4, alignItems: isRtl ? "flex-end" : "flex-start" }}>
+                          <span style={{ fontSize: 14, fontWeight: 700 }}>{isRtl ? "تمارا | قسّم دفعاتك بدون فوائد" : "Tamara | Split in 3 interest-free payments"}</span>
+                          <span style={{ fontSize: 11, color: "var(--text-muted)" }}>{isRtl ? "ادفع 1/3 اليوم والباقي على شهرين بدون فوائد ورسوم" : "Pay 1/3 today and the rest over 2 months."}</span>
+                        </div>
+                        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                          <img src="https://cdn.tamara.co/assets/svg/tamara-logo-badge-ar.svg" alt="Tamara" style={{ height: 26, background: "transparent" }} />
+                        </div>
                       </div>
-                      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                        <img src="https://cdn.tamara.co/assets/svg/tamara-logo-badge-ar.svg" alt="Tamara" style={{ height: 26, background: "transparent" }} />
-                      </div>
-                    </div>
-                  </label>
+                    </label>
+                  )}
 
                   {/* Option 4: Cash / Transfer after contact */}
-                  <label style={{
-                    display: "flex", alignItems: "center", gap: 14, padding: "16px 20px", borderRadius: 10, border: paymentMethod === "cash" ? "1px solid var(--pink)" : "1px solid var(--border)", background: "rgba(255,255,255,0.02)", cursor: "pointer", flexDirection: isRtl ? "row-reverse" : "row"
-                  }}>
-                    <input type="radio" checked={paymentMethod === "cash"} onChange={() => setPaymentMethod("cash")} style={{ width: 18, height: 18 }} />
-                    <div style={{ flex: 1, display: "flex", justifyContent: "space-between", alignItems: "center", flexDirection: isRtl ? "row-reverse" : "row" }}>
-                      <div style={{ display: "flex", flexDirection: "column", gap: 4, alignItems: isRtl ? "flex-end" : "flex-start" }}>
-                        <span style={{ fontSize: 14, fontWeight: 600 }}>{isRtl ? "دفع نقدي / تحويل بنكي بعد التواصل" : "Cash / Bank Transfer after contact"}</span>
-                        <span style={{ fontSize: 11, color: "var(--text-muted)" }}>{isRtl ? "يتم التنسيق والدفع نقداً أو بالتحويل البنكي بعد التواصل وتأكيد موعد المناسبة" : "Pay via cash or bank transfer after we contact you to confirm details."}</span>
+                  {showCash && (
+                    <label style={{
+                      display: "flex", alignItems: "center", gap: 14, padding: "16px 20px", borderRadius: 10, border: paymentMethod === "cash" ? "1px solid var(--pink)" : "1px solid var(--border)", background: "rgba(255,255,255,0.02)", cursor: "pointer", flexDirection: isRtl ? "row-reverse" : "row"
+                    }}>
+                      <input type="radio" checked={paymentMethod === "cash"} onChange={() => setPaymentMethod("cash")} style={{ width: 18, height: 18 }} />
+                      <div style={{ flex: 1, display: "flex", justifyContent: "space-between", alignItems: "center", flexDirection: isRtl ? "row-reverse" : "row" }}>
+                        <div style={{ display: "flex", flexDirection: "column", gap: 4, alignItems: isRtl ? "flex-end" : "flex-start" }}>
+                          <span style={{ fontSize: 14, fontWeight: 600 }}>{isRtl ? "دفع نقدي / تحويل بنكي بعد التواصل" : "Cash / Bank Transfer after contact"}</span>
+                          <span style={{ fontSize: 11, color: "var(--text-muted)" }}>{isRtl ? "يتم التنسيق والدفع نقداً أو بالتحويل البنكي بعد التواصل وتأكيد موعد المناسبة" : "Pay via cash or bank transfer after we contact you to confirm details."}</span>
+                        </div>
+                        <span className="icon" style={{ color: "var(--pink)", fontSize: 24 }}>payments</span>
                       </div>
-                      <span className="icon" style={{ color: "var(--pink)", fontSize: 24 }}>payments</span>
-                    </div>
-                  </label>
+                    </label>
+                  )}
                 </div>
 
                 {/* Card Fields Mockup */}
