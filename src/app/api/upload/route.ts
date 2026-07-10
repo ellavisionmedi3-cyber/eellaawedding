@@ -1,3 +1,4 @@
+import { checkApiAuth } from "@/lib/auth";
 import { NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
 
@@ -6,6 +7,9 @@ cloudinary.config({
 });
 
 export async function POST(request: Request) {
+  const authError = await checkApiAuth();
+  if (authError) return authError;
+
   try {
     const formData = await request.formData();
     const file = formData.get("file") as File;

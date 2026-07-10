@@ -1,3 +1,4 @@
+import { checkApiAuth } from "@/lib/auth";
 import { NextResponse } from "next/server";
 import connectToDatabase, { Package } from "@/lib/db";
 
@@ -18,6 +19,9 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const authError = await checkApiAuth();
+  if (authError) return authError;
+
   try {
     const data = await request.json();
     await connectToDatabase();

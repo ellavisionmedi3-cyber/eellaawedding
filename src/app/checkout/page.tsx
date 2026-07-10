@@ -32,12 +32,22 @@ function CheckoutContent() {
   const showTamara = settings.payment_method_tamara !== "0";
   const showCash = settings.payment_method_cash !== "0";
 
-  const defaultMethod = showCard ? "card" : (showMada ? "mada" : (showTamara ? "tamara" : (showCash ? "cash" : "card")));
-  const [paymentMethod, setPaymentMethod] = useState<"card" | "mada" | "tamara" | "cash">("card");
+  const defaultMethod = showCard ? "card" : (showMada ? "mada" : (showTamara ? "tamara" : (showCash ? "cash" : "")));
+  const [paymentMethod, setPaymentMethod] = useState<string>("");
 
   useEffect(() => {
-    setPaymentMethod(defaultMethod);
-  }, [defaultMethod]);
+    if (defaultMethod && !paymentMethod) {
+      setPaymentMethod(defaultMethod);
+    } else if (!showCard && paymentMethod === "card") {
+      setPaymentMethod(defaultMethod);
+    } else if (!showMada && paymentMethod === "mada") {
+      setPaymentMethod(defaultMethod);
+    } else if (!showTamara && paymentMethod === "tamara") {
+      setPaymentMethod(defaultMethod);
+    } else if (!showCash && paymentMethod === "cash") {
+      setPaymentMethod(defaultMethod);
+    }
+  }, [defaultMethod, showCard, showMada, showTamara, showCash, paymentMethod]);
   const [formData, setFormData] = useState({
     name: "",
     mobile: "",
@@ -572,7 +582,7 @@ function CheckoutContent() {
                 type="submit" 
                 className="btn btn-primary" 
                 style={{ width: "100%", padding: 16, marginTop: 12, justifyContent: "center", fontSize: 13 }}
-                disabled={isSubmitting || !selectedPkg || checkingEligibility || (paymentMethod === "tamara" && isEligible === false)}
+                disabled={isSubmitting || !selectedPkg || checkingEligibility || (paymentMethod === "tamara" && isEligible === false) || !paymentMethod}
               >
                 {isSubmitting 
                   ? (isRtl ? "جاري إتمام المعاملة..." : "Processing Order...") 

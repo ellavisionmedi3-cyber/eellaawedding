@@ -19,6 +19,7 @@ interface AdminProps {
   services: any[];
   addons: any[];
   reviews: any[];
+  isServerAuthorized?: boolean;
 }
 
 const englishFonts = ["Playfair Display", "Inter", "Roboto", "Montserrat", "Cinzel", "Cormorant Garamond", "Libre Baskerville", "Bodoni Moda", "Prata"];
@@ -35,7 +36,8 @@ export default function AdminDashboardClient({
   teamMembers = [], 
   services: initialServices = [], 
   addons: initialAddons = [],
-  reviews: initialReviews = []
+  reviews: initialReviews = [],
+  isServerAuthorized = false
 }: AdminProps) {
   const { t, isRtl } = useLanguage();
   const router = useRouter();
@@ -49,7 +51,7 @@ export default function AdminDashboardClient({
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [notification, setNotification] = useState<{message:string, type:'success'|'error'} | null>(null);
-  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [isAuthorized, setIsAuthorized] = useState(isServerAuthorized);
   const [loginForm, setLoginForm] = useState({ user: '', pass: '' });
   
   const [bookingsList, setBookingsList] = useState(initialBookings);
@@ -221,36 +223,43 @@ export default function AdminDashboardClient({
   };
 
   useEffect(() => {
-    const auth = localStorage.getItem('ayla_admin_auth');
-    if (auth === 'true') setIsAuthorized(true);
-    
-    fetch("/api/bookings").then(r => r.json()).then(setBookingsList);
-    fetch("/api/packages").then(r => r.json()).then(setPackagesList);
-    fetch("/api/gallery").then(r => r.json()).then(setGalleryList);
-    fetch("/api/blog").then(r => r.json()).then(setPostsList);
-    fetch("/api/team").then(r => r.json()).then(setTeamList);
-    fetch("/api/services").then(r => r.json()).then(setServicesList);
-    fetch("/api/addons").then(r => r.json()).then(setAddonsList);
-    fetch("/api/reviews?all=true").then(r => r.json()).then(setReviews);
-  }, []);
+    if (isServerAuthorized) {
+      fetch("/api/bookings").then(r => r.json()).then(setBookingsList);
+      fetch("/api/packages").then(r => r.json()).then(setPackagesList);
+      fetch("/api/gallery").then(r => r.json()).then(setGalleryList);
+      fetch("/api/blog").then(r => r.json()).then(setPostsList);
+      fetch("/api/team").then(r => r.json()).then(setTeamList);
+      fetch("/api/services").then(r => r.json()).then(setServicesList);
+      fetch("/api/addons").then(r => r.json()).then(setAddonsList);
+      fetch("/api/reviews?all=true").then(r => r.json()).then(setReviews);
+    }
+  }, [isServerAuthorized]);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const correctUser = settingsState.admin_username || 'admin';
-    const correctPass = settingsState.admin_password || 'Ee203120@#';
-    
-    if (loginForm.user === correctUser && loginForm.pass === correctPass) {
-      setIsAuthorized(true);
-      localStorage.setItem('ayla_admin_auth', 'true');
-      notify(isRtl ? "تم تسجيل الدخول" : "Logged in successfully");
-    } else {
-      notify(isRtl ? "بيانات الدخول غير صحيحة" : "Invalid credentials", "error");
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user: loginForm.user, pass: loginForm.pass })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setIsAuthorized(true);
+        notify(isRtl ? "تم تسجيل الدخول بنجاح" : "Logged in successfully");
+        window.location.reload(); // Reload to get SSR data
+      } else {
+        notify(isRtl ? "بيانات الدخول غير صحيحة" : "Invalid credentials", "error");
+      }
+    } catch (err) {
+      notify(isRtl ? "حدث خطأ" : "An error occurred", "error");
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await fetch("/api/auth/logout", { method: "POST" });
     setIsAuthorized(false);
-    localStorage.removeItem('ayla_admin_auth');
+    window.location.reload();
   };
 
   const statusMap: Record<string, { label: string; bg: string; color: string }> = {

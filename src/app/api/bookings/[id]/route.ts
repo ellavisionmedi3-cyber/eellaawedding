@@ -1,3 +1,4 @@
+import { checkApiAuth } from "@/lib/auth";
 import { NextResponse } from "next/server";
 import connectToDatabase, { Booking } from "@/lib/db";
 import nodemailer from "nodemailer";
@@ -161,6 +162,9 @@ async function sendClientStatusEmail(booking: any, newStatus: string) {
 }
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const authError = await checkApiAuth();
+  if (authError) return authError;
+
   try {
     const { id } = await params;
     const data = await request.json();
@@ -193,6 +197,9 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
 }
 
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const authError = await checkApiAuth();
+  if (authError) return authError;
+
   try {
     const { id } = await params;
     await connectToDatabase();

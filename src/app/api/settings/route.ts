@@ -1,12 +1,16 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import connectToDatabase, { SiteSetting } from "@/lib/db";
+import { checkApiAuth } from "@/lib/auth";
 
 export async function POST(request: Request) {
   return PATCH(request);
 }
 
 export async function PATCH(request: Request) {
+  const authError = await checkApiAuth();
+  if (authError) return authError;
+
   try {
     const data = await request.json();
     await connectToDatabase();

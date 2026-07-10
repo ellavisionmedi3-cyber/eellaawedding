@@ -1,9 +1,31 @@
 import connectToDatabase, { Booking, Package, GalleryItem, BlogPost, SiteSetting, NewsletterSubscriber, TeamMember, Service, Addon, Review } from "@/lib/db";
 import AdminDashboardClient from "./AdminDashboardClient";
+import { getAdminAuthStatus } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminPage() {
+  const isAuth = await getAdminAuthStatus();
+
+  if (!isAuth) {
+    return (
+      <AdminDashboardClient
+        isServerAuthorized={false}
+        bookings={[]}
+        stats={{ totalBookings: 0, pendingBookings: 0, confirmedBookings: 0, newToday: 0, revenue: 0, galleryCount: 0, blogCount: 0, subscriberCount: 0 }}
+        galleryItems={[]}
+        blogPosts={[]}
+        packages={[]}
+        subscribers={[]}
+        settings={{}}
+        teamMembers={[]}
+        services={[]}
+        addons={[]}
+        reviews={[]}
+      />
+    );
+  }
+
   await connectToDatabase();
 
   const bookings = await Booking.find().sort({ created_at: -1 }).lean();
@@ -57,6 +79,7 @@ export default async function AdminPage() {
 
   return (
     <AdminDashboardClient
+      isServerAuthorized={true}
       bookings={mapIds(bookings)}
       stats={{
         totalBookings,

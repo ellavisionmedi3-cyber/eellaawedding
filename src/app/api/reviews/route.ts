@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import connectToDatabase, { Review } from "@/lib/db";
+import { checkApiAuth } from "@/lib/auth";
 
 export async function GET(request: Request) {
   try {
@@ -39,6 +40,9 @@ export async function POST(request: Request) {
 }
 
 export async function PATCH(request: Request) {
+  const authError = await checkApiAuth();
+  if (authError) return authError;
+
   try {
     const data = await request.json();
     await connectToDatabase();
@@ -53,6 +57,9 @@ export async function PATCH(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  const authError = await checkApiAuth();
+  if (authError) return authError;
+
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
