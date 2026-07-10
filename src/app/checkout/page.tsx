@@ -26,7 +26,7 @@ function CheckoutContent() {
 
   const [packages, setPackages] = useState<Package[]>([]);
   const [selectedPkg, setSelectedPkg] = useState<Package | null>(null);
-  const [paymentMethod, setPaymentMethod] = useState<"card" | "mada" | "tamara">("card");
+  const [paymentMethod, setPaymentMethod] = useState<"card" | "mada" | "tamara" | "cash">("card");
   const [formData, setFormData] = useState({
     name: "",
     mobile: "",
@@ -216,7 +216,7 @@ function CheckoutContent() {
         additional_services: `Payment Method: ${paymentMethod.toUpperCase()}`,
         notes: `${formData.notes}\n[Payment Method: ${paymentMethod.toUpperCase()}]`,
         payment_method: paymentMethod,
-        payment_status: paymentMethod === "tamara" ? "authorized" : "paid",
+        payment_status: paymentMethod === "tamara" ? "authorized" : (paymentMethod === "cash" ? "pending" : "paid"),
         amount: selectedPkg.price
       };
 
@@ -440,7 +440,7 @@ function CheckoutContent() {
               {/* Section 3: Payment Method Selection */}
               <div style={{ marginTop: 16 }}>
                 <h3 style={{ fontSize: 16, fontWeight: 700, color: "var(--pink)", borderBottom: "1px solid var(--border)", paddingBottom: 10, marginBottom: 20, textAlign: isRtl ? "right" : "left" }}>
-                  {isRtl ? "3. طريقة الدفع الإلكتروني" : "3. Select Payment Method"}
+                  {isRtl ? "3. طريقة الدفع" : "3. Select Payment Method"}
                 </h3>
                 
                 <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -479,6 +479,20 @@ function CheckoutContent() {
                       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                         <img src="https://cdn.tamara.co/assets/svg/tamara-logo-badge-ar.svg" alt="Tamara" style={{ height: 26, background: "transparent" }} />
                       </div>
+                    </div>
+                  </label>
+
+                  {/* Option 4: Cash / Transfer after contact */}
+                  <label style={{
+                    display: "flex", alignItems: "center", gap: 14, padding: "16px 20px", borderRadius: 10, border: paymentMethod === "cash" ? "1px solid var(--pink)" : "1px solid var(--border)", background: "rgba(255,255,255,0.02)", cursor: "pointer", flexDirection: isRtl ? "row-reverse" : "row"
+                  }}>
+                    <input type="radio" checked={paymentMethod === "cash"} onChange={() => setPaymentMethod("cash")} style={{ width: 18, height: 18 }} />
+                    <div style={{ flex: 1, display: "flex", justifyContent: "space-between", alignItems: "center", flexDirection: isRtl ? "row-reverse" : "row" }}>
+                      <div style={{ display: "flex", flexDirection: "column", gap: 4, alignItems: isRtl ? "flex-end" : "flex-start" }}>
+                        <span style={{ fontSize: 14, fontWeight: 600 }}>{isRtl ? "دفع نقدي / تحويل بنكي بعد التواصل" : "Cash / Bank Transfer after contact"}</span>
+                        <span style={{ fontSize: 11, color: "var(--text-muted)" }}>{isRtl ? "يتم التنسيق والدفع نقداً أو بالتحويل البنكي بعد التواصل وتأكيد موعد المناسبة" : "Pay via cash or bank transfer after we contact you to confirm details."}</span>
+                      </div>
+                      <span className="icon" style={{ color: "var(--pink)", fontSize: 24 }}>payments</span>
                     </div>
                   </label>
                 </div>
