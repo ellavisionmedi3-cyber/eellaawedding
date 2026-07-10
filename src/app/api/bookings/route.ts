@@ -23,7 +23,10 @@ export async function POST(request: Request) {
       package: data.package,
       additional_services: data.additional_services || "",
       notes: data.notes || "",
-      status: "pending"
+      status: "pending",
+      payment_method: data.payment_method || "card",
+      payment_status: data.payment_status || "pending",
+      amount: data.amount || 0
     });
 
     return NextResponse.json({ success: true, id: newBooking._id.toString() });

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
 
-interface Booking { id: string; client_name: string; mobile: string; email: string|null; event_type: string; event_date: string|null; venue_location: string|null; package: string; additional_services: string|null; notes: string|null; status: string; created_at: string; }
+interface Booking { id: string; client_name: string; mobile: string; email: string|null; event_type: string; event_date: string|null; venue_location: string|null; package: string; additional_services: string|null; notes: string|null; status: string; created_at: string; payment_method?: string; payment_status?: string; }
 interface Stats { totalBookings: number; revenue: number; galleryCount: number; newToday: number; pendingBookings: number; confirmedBookings: number; blogCount: number; subscriberCount: number; }
 
 interface AdminProps {
@@ -259,6 +259,25 @@ export default function AdminDashboardClient({
     completed: { label: isRtl ? "مكتمل" : "COMPLETED", bg: "rgba(145,205,255,0.16)", color: "#91cdff" },
     cancelled: { label: isRtl ? "ملغي" : "CANCELLED", bg: "rgba(255,180,171,0.12)", color: "#ffb4ab" },
     "follow-up": { label: isRtl ? "متابعة" : "FOLLOW UP", bg: "rgba(209,188,255,0.12)", color: "#d1bcff" },
+    processing: { label: isRtl ? "قيد المعالجة" : "PROCESSING", bg: "rgba(255,193,7,0.12)", color: "#ffc107" },
+    refunded: { label: isRtl ? "مسترجع" : "REFUNDED", bg: "rgba(233,30,99,0.12)", color: "#e91e63" },
+    expired: { label: isRtl ? "منتهي" : "EXPIRED", bg: "rgba(158,158,158,0.12)", color: "#9e9e9e" },
+    declined: { label: isRtl ? "مرفوض" : "DECLINED", bg: "rgba(244,67,54,0.12)", color: "#f44336" }
+  };
+
+  const getPaymentMethodLabel = (b: Booking) => {
+    const method = b.payment_method || "";
+    if (method === "tamara") return isRtl ? "تمارا" : "Tamara";
+    if (method === "mada") return isRtl ? "مدى" : "Mada";
+    if (method === "card") return isRtl ? "بطاقة" : "Card";
+    
+    // Fallback to searching notes
+    const notesText = (b.notes || "").toLowerCase();
+    if (notesText.includes("tamara")) return isRtl ? "تمارا" : "Tamara";
+    if (notesText.includes("mada")) return isRtl ? "مدى" : "Mada";
+    if (notesText.includes("card")) return isRtl ? "بطاقة" : "Card";
+    
+    return isRtl ? "بطاقة" : "Card";
   };
 
   const filtered = filter === "all" ? bookingsList : bookingsList.filter(b => b.status === filter);
@@ -692,7 +711,7 @@ export default function AdminDashboardClient({
               <table style={s({ width: "100%", borderCollapse: "collapse", textAlign: isRtl ? "right" : "left" })}>
                 <thead>
                   <tr style={s({ background: "rgba(255,255,255,0.02)" })}>
-                    {[t("admin.client"), t("admin.date"), t("contact.form.package"), t("admin.status"), t("admin.action")].map(h => (
+                    {[t("admin.client"), t("admin.date"), t("contact.form.package"), isRtl ? "طريقة الدفع" : "Payment Method", t("admin.status"), t("admin.action")].map(h => (
                       <th key={h} style={s({ padding: "12px 20px", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: "var(--text-dim)" })}>{h}</th>
                     ))}
                   </tr>
@@ -708,6 +727,7 @@ export default function AdminDashboardClient({
                         </td>
                         <td style={s({ padding: "16px 20px", fontSize: 13, color: "var(--text-muted)" })}>{new Date(b.created_at).toLocaleDateString(isRtl ? "ar-SA" : "en-US")}</td>
                         <td style={s({ padding: "16px 20px", fontSize: 13, color: "var(--pink)", textTransform: "capitalize", fontWeight: 600 })}>{b.package}</td>
+                        <td style={s({ padding: "16px 20px", fontSize: 13, color: "var(--text-muted)", textTransform: "capitalize", fontWeight: 600 })}>{getPaymentMethodLabel(b)}</td>
                         <td style={s({ padding: "16px 20px" })}>
                           <span style={s({ padding: "4px 12px", borderRadius: 20, fontSize: 10, fontWeight: 800, letterSpacing: "0.08em", background: st.bg, color: st.color })}>{st.label}</span>
                         </td>
@@ -1621,6 +1641,7 @@ export default function AdminDashboardClient({
               [t("contact.form.mobile"), selected.mobile], 
               [isRtl ? "موعد المناسبة" : "Event Date", selected.event_date || "—"],
               [t("contact.form.package"), selected.package],
+              [isRtl ? "طريقة الدفع" : "Payment Method", getPaymentMethodLabel(selected)],
               [t("contact.form.email"), selected.email||"—"], 
               [t("contact.form.eventType"), selected.event_type],
               [isRtl ? "الموقع" : "Location", selected.venue_location || "—"],

@@ -205,6 +205,9 @@ const BookingSchema = new mongoose.Schema({
   additional_services: String,
   notes: String,
   status: { type: String, default: 'pending' },
+  payment_method: { type: String, default: 'card' },
+  payment_status: { type: String, default: 'pending' },
+  amount: { type: Number, default: 0 },
 }, { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } });
 
 const GalleryItemSchema = new mongoose.Schema({
