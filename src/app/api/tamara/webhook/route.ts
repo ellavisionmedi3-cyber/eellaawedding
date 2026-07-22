@@ -149,10 +149,10 @@ async function sendNotificationAlert(booking: any, eventType: string, orderId: s
         <p style="margin: 8px 0; font-size: 15px;">• <strong>حالة الدفع:</strong> ${statusText}</p>
       </div>
 
-      <p style="font-size: 16px; color: #333; line-height: 1.6;">يتطلع فريق <strong>ايلا ميديا للتصوير السينمائي</strong> لتوثيق لحظاتك الفريدة بجودة وسينمائية مميزة. سنقوم بالتواصل معكِ قريباً لمتابعة التفاصيل.</p>
+      <p style="font-size: 16px; color: #333; line-height: 1.6;">يتطلع فريق <strong>إيلا ميديا للتصوير السينمائي</strong> لتوثيق لحظاتك الفريدة بجودة وسينمائية مميزة. سنقوم بالتواصل معكِ قريباً لمتابعة التفاصيل.</p>
       
       <div style="text-align: center; margin-top: 30px; border-top: 1px solid #ddd; padding-top: 20px;">
-        <p style="font-size: 14px; color: #777;">مع كل الحب،<br/><strong>فريق ايلا ميديا للتصوير السينمائي</strong></p>
+        <p style="font-size: 14px; color: #777;">مع كل الحب،<br/><strong>فريق إيلا ميديا للتصوير السينمائي</strong></p>
       </div>
     </div>
   `;
@@ -178,7 +178,7 @@ async function sendNotificationAlert(booking: any, eventType: string, orderId: s
   if (transporter && adminEmail) {
     try {
       await transporter.sendMail({
-        from: `"${clientName} via Ayla Media" <${mailUser}>`,
+        from: `"${clientName} via Ella Media" <${mailUser}>`,
         to: adminEmail,
         subject: `[تمارا] تم استلام دفعة جديدة من العميل: ${clientName} (${statusText})`,
         html: adminEmailHtml
@@ -194,9 +194,9 @@ async function sendNotificationAlert(booking: any, eventType: string, orderId: s
   if (transporter && booking.email && isSuccessPayment) {
     try {
       await transporter.sendMail({
-        from: `"ايلا ميديا للتصوير السينمائي" <${mailUser}>`,
+        from: `"إيلا ميديا للتصوير السينمائي" <${mailUser}>`,
         to: booking.email,
-        subject: `تم استلام طلب حجزك بنجاح - ايلا ميديا`,
+        subject: `تم استلام طلب حجزك بنجاح - إيلا ميديا`,
         html: clientEmailHtml
       });
       console.log(`[TAMARA WEBHOOK ALERT] Customer receipt email sent successfully to ${booking.email}`);
@@ -212,7 +212,7 @@ async function sendNotificationAlert(booking: any, eventType: string, orderId: s
 
   if (waApiUrl && waToken && waTo) {
     try {
-      const waMsg = `📢 *إشعار تمارا جديد (ايلا ميديا)* 📢\n\n` +
+      const waMsg = `📢 *إشعار تمارا جديد (إيلا ميديا)* 📢\n\n` +
         `• *اسم العميلة:* ${clientName}\n` +
         `• *رقم الجوال:* ${clientMobile}\n` +
         `• *تاريخ الحجز:* ${eventDate}\n` +

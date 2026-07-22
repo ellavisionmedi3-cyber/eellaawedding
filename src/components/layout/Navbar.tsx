@@ -51,9 +51,9 @@ export default function Navbar() {
         {/* Logo */}
         <Link href="/" style={{ display: "flex", alignItems: "center" }}>
           {settings?.logo_url ? (
-            <img src={settings.logo_url} alt="Ayla Media" style={{ width: settings.logo_width ? `${settings.logo_width}px` : "150px", objectFit: "contain" }} />
+            <img src={settings.logo_url} alt="Ella Media" style={{ width: settings.logo_width ? `${settings.logo_width}px` : "150px", objectFit: "contain" }} />
           ) : (
-            <span style={{ fontFamily: "var(--font-display)", fontSize: 20, fontWeight: 700, color: "var(--pink)", letterSpacing: "-0.02em" }}>Ayla Media</span>
+            <span style={{ fontFamily: "var(--font-display)", fontSize: 20, fontWeight: 700, color: "var(--pink)", letterSpacing: "-0.02em" }}>Ella Media</span>
           )}
         </Link>
 

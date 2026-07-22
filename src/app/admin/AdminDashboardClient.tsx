@@ -461,7 +461,7 @@ export default function AdminDashboardClient({
       {/* Sidebar */}
       <aside style={s({ width: 220, flexShrink: 0, background: "var(--bg-2)", borderRight: isRtl ? "none" : "1px solid var(--border)", borderLeft: isRtl ? "1px solid var(--border)" : "none", display: "flex", flexDirection: "column", padding: "28px 0", position: "fixed", top: 0, [isRtl ? 'right' : 'left']: isMobile ? (isSidebarOpen ? 0 : -250) : 0, height: "100vh", zIndex: 50, textAlign: isRtl ? "right" : "left", transition: "all 0.3s ease" })}>
         <div style={s({ padding: "0 20px 28px", borderBottom: "1px solid var(--border)" })}>
-          <div style={s({ fontFamily: "var(--font-display)", fontSize: 17, fontWeight: 700, color: "var(--pink)" })}>Ayla Media</div>
+          <div style={s({ fontFamily: "var(--font-display)", fontSize: 17, fontWeight: 700, color: "var(--pink)" })}>Ella Media</div>
           <div style={s({ fontSize: 11, color: "var(--text-dim)", marginTop: 4 })}>{t("admin.portal")}</div>
         </div>
 
@@ -1264,7 +1264,7 @@ export default function AdminDashboardClient({
                   
                   {/* About Hero */}
                   <div style={s({ display: "flex", flexDirection: "column", gap: 8 })}>
-                    <label style={s({ fontSize: 12, fontWeight: 600, color: "var(--text-dim)" })}>{isRtl ? "صورة غلاف صفحة (عن أيلة)" : "About Page Hero"}</label>
+                    <label style={s({ fontSize: 12, fontWeight: 600, color: "var(--text-dim)" })}>{isRtl ? "صورة غلاف صفحة (عن إيلا)" : "About Page Hero"}</label>
                     <div style={{ display: "flex", gap: 8 }}>
                       <input type="text" value={settingsState.about_hero_url || ""} onChange={e => setSettingsState({ ...settingsState, about_hero_url: e.target.value })} style={s({ padding: "12px 16px", borderRadius: 8, border: "1px solid var(--border)", background: "rgba(255,255,255,0.02)", color: "var(--text)", width: "100%", fontSize: 14 })} placeholder="https://..." />
                       <label className="btn btn-outline" style={{ display: "flex", alignItems: "center", cursor: "pointer", padding: "0 16px" }}>
@@ -1288,7 +1288,7 @@ export default function AdminDashboardClient({
 
                   {/* About Vision */}
                   <div style={s({ display: "flex", flexDirection: "column", gap: 8 })}>
-                    <label style={s({ fontSize: 12, fontWeight: 600, color: "var(--text-dim)" })}>{isRtl ? "صورة الرؤية (صفحة عن أيلة)" : "About Vision Image"}</label>
+                    <label style={s({ fontSize: 12, fontWeight: 600, color: "var(--text-dim)" })}>{isRtl ? "صورة الرؤية (صفحة عن إيلا)" : "About Vision Image"}</label>
                     <div style={{ display: "flex", gap: 8 }}>
                       <input type="text" value={settingsState.about_vision_url || ""} onChange={e => setSettingsState({ ...settingsState, about_vision_url: e.target.value })} style={s({ padding: "12px 16px", borderRadius: 8, border: "1px solid var(--border)", background: "rgba(255,255,255,0.02)", color: "var(--text)", width: "100%", fontSize: 14 })} placeholder="https://..." />
                       <label className="btn btn-outline" style={{ display: "flex", alignItems: "center", cursor: "pointer", padding: "0 16px" }}>

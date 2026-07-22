@@ -83,7 +83,7 @@ export default function TermsOfServicePage() {
                 <div>
                   <h2 style={{ fontFamily: "var(--font-display)", fontSize: 24, color: "var(--pink)", marginBottom: 14 }}>1. Acceptance of Terms</h2>
                   <p style={{ color: "var(--text-muted)", lineHeight: 1.8 }}>
-                    By accessing the **Ayla Media** website or booking our photography services, you agree to comply with and be bound by the following terms and conditions. These terms apply to all digital bookings and direct agreements.
+                    By accessing the **Ella Media** website or booking our photography services, you agree to comply with and be bound by the following terms and conditions. These terms apply to all digital bookings and direct agreements.
                   </p>
                 </div>
 
@@ -114,7 +114,7 @@ export default function TermsOfServicePage() {
                 <div>
                   <h2 style={{ fontFamily: "var(--font-display)", fontSize: 24, color: "var(--pink)", marginBottom: 14 }}>4. Copyright & Usage Rights</h2>
                   <p style={{ color: "var(--text-muted)", lineHeight: 1.8 }}>
-                    Copyright and ownership of all raw and edited photos/videos captured remain with Ayla Media. We strictly commit never to use your private photos or videos for marketing, portfolio displays, or social media without your **explicit, signed written consent**. The client receives full non-commercial personal usage rights for all final delivered assets.
+                    Copyright and ownership of all raw and edited photos/videos captured remain with Ella Media. We strictly commit never to use your private photos or videos for marketing, portfolio displays, or social media without your **explicit, signed written consent**. The client receives full non-commercial personal usage rights for all final delivered assets.
                   </p>
                 </div>
 

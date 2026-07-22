@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Admin Dashboard | Ayla Media",
+  title: "Admin Dashboard | Ella Media",
   robots: { index: false, follow: false },
 };
 

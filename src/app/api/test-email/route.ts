@@ -49,7 +49,7 @@ export async function GET() {
     const info = await transporter.sendMail({
       from: `"Ella Wedding Test" <${mailUser}>`,
       to: adminEmail,
-      subject: "اختبار إرسال البريد الإلكتروني - موقع ايلا ميديا",
+      subject: "اختبار إرسال البريد الإلكتروني - موقع إيلا ميديا",
       text: "إذا وصلت هذه الرسالة، فهذا يعني أن إعدادات البريد الإلكتروني (SMTP) الخاصة بموقعك تعمل بنجاح وبشكل سليم!",
       html: `
         <div style="font-family: Arial, sans-serif; direction: rtl; text-align: right; max-width: 500px; margin: 0 auto; border: 2px solid #db2777; border-radius: 10px; padding: 20px;">
@@ -57,7 +57,7 @@ export async function GET() {
           <p style="font-size: 16px; color: #333;">أهلاً بك،</p>
           <p style="font-size: 16px; color: #333; line-height: 1.6;">هذه رسالة تأكيد تفيد بأن إعدادات البريد الإلكتروني (SMTP) الخاصة بك في Vercel قد تم إعدادها وربطها بنجاح وهي قادرة على إرسال الإشعارات الآن!</p>
           <hr style="border: 0; border-top: 1px solid #ddd; margin: 20px 0;"/>
-          <p style="font-size: 12px; color: #777; text-align: center;">ايلا ميديا للتصوير السينمائي - Ayla Media</p>
+          <p style="font-size: 12px; color: #777; text-align: center;">إيلا ميديا للتصوير السينمائي - Ella Media</p>
         </div>
       `
     });

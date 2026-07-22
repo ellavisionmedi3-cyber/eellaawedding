@@ -6,7 +6,7 @@ import PricingTeaser from "@/components/home/PricingTeaser";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
 
 export const metadata: Metadata = {
-  title: "Ayla Media | Exclusive Female-Only Wedding Photography Saudi Arabia",
+  title: "Ella Media | Exclusive Female-Only Wedding Photography Saudi Arabia",
   description:
     "Exclusive female-only wedding photography for the modern Saudi bride. Capturing every whispered secret and luminous moment with cinematic precision.",
 };

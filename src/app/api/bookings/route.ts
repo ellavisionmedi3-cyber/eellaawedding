@@ -146,7 +146,7 @@ async function sendAdminNewBookingEmail(booking: any) {
       });
 
       await transporter.sendMail({
-        from: `"${clientName} via Ayla Media" <${mailUser}>`,
+        from: `"${clientName} via Ella Media" <${mailUser}>`,
         to: adminEmail,
         subject: emailSubject,
         html: emailHtml
@@ -164,7 +164,7 @@ async function sendAdminNewBookingEmail(booking: any) {
 
   if (waApiUrl && waToken && waTo) {
     try {
-      const waMsg = `🔔 *طلب حجز جديد (ايلا ميديا)* 🔔\n\n` +
+      const waMsg = `🔔 *طلب حجز جديد (إيلا ميديا)* 🔔\n\n` +
         `• *العميلة:* ${clientName}\n` +
         `• *الجوال:* ${clientMobile}\n` +
         `• *التاريخ:* ${eventDate}\n` +
@@ -226,7 +226,7 @@ async function sendClientNewBookingEmail(booking: any) {
   const eventDate = booking.event_date || "غير محدد";
   const orderRef = booking._id.toString();
 
-  const subject = `تم استلام طلب حجزك بنجاح - ايلا ميديا`;
+  const subject = `تم استلام طلب حجزك بنجاح - إيلا ميديا`;
   const htmlContent = `
     <div style="font-family: Arial, sans-serif; direction: rtl; text-align: right; max-width: 600px; margin: 0 auto; border: 1px solid #FFB8CC; border-radius: 10px; padding: 25px; background-color: #fff;">
       <h2 style="color: #db2777; border-bottom: 2px solid #FFB8CC; padding-bottom: 10px; text-align: center;">تم استلام طلب حجزك بنجاح 🎉</h2>
@@ -241,10 +241,10 @@ async function sendClientNewBookingEmail(booking: any) {
         <p style="margin: 8px 0; font-size: 15px;">• <strong>حالة الطلب:</strong> قيد المراجعة / الانتظار</p>
       </div>
 
-      <p style="font-size: 16px; color: #333; line-height: 1.6;">سيقوم فريق <strong>ايلا ميديا للتصوير السينمائي</strong> بمراجعة تفاصيل طلبك وجدول المواعيد، وسنتواصل معكِ قريباً لتأكيد الموعد النهائي والتنسيق.</p>
+      <p style="font-size: 16px; color: #333; line-height: 1.6;">سيقوم فريق <strong>إيلا ميديا للتصوير السينمائي</strong> بمراجعة تفاصيل طلبك وجدول المواعيد، وسنتواصل معكِ قريباً لتأكيد الموعد النهائي والتنسيق.</p>
       
       <div style="text-align: center; margin-top: 30px; border-top: 1px solid #ddd; padding-top: 20px;">
-        <p style="font-size: 14px; color: #777;">مع كل الحب،<br/><strong>فريق ايلا ميديا للتصوير السينمائي</strong></p>
+        <p style="font-size: 14px; color: #777;">مع كل الحب،<br/><strong>فريق إيلا ميديا للتصوير السينمائي</strong></p>
       </div>
     </div>
   `;
@@ -264,7 +264,7 @@ async function sendClientNewBookingEmail(booking: any) {
     });
 
     await transporter.sendMail({
-      from: `"ايلا ميديا للتصوير السينمائي" <${mailUser}>`,
+      from: `"إيلا ميديا للتصوير السينمائي" <${mailUser}>`,
       to: booking.email,
       subject: subject,
       html: htmlContent

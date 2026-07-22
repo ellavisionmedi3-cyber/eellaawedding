@@ -35,9 +35,9 @@ export default function Footer() {
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             <Link href="/">
               {settings?.logo_url ? (
-                <img src={settings.logo_url} alt="Ayla Media" style={{ width: settings.logo_width ? `${settings.logo_width}px` : "120px", height: "auto", objectFit: "contain" }} />
+                <img src={settings.logo_url} alt="Ella Media" style={{ width: settings.logo_width ? `${settings.logo_width}px` : "120px", height: "auto", objectFit: "contain" }} />
               ) : (
-                <span style={{ fontFamily: "var(--font-display)", fontSize: 20, fontWeight: 700, color: "var(--pink)" }}>Ayla Media</span>
+                <span style={{ fontFamily: "var(--font-display)", fontSize: 20, fontWeight: 700, color: "var(--pink)" }}>Ella Media</span>
               )}
             </Link>
             <p style={{ fontSize: 14, color: "var(--text-muted)", lineHeight: 1.7, maxWidth: 260, margin: isRtl ? "0 0 0 auto" : "0" }}>
@@ -74,7 +74,7 @@ export default function Footer() {
               {t("footer.contactTitle")}
             </span>
             {[
-              { icon: "mail", text: settings?.contact_email || "studio@aylamedia.sa" },
+              { icon: "mail", text: settings?.contact_email || "studio@ellamedia.sa" },
               { icon: "call", text: settings?.contact_phone || "+966 500 000 000" },
               { icon: "location_on", text: (isRtl ? settings?.contact_address_ar : settings?.contact_address) || (isRtl ? "العليا، الرياض، السعودية" : "Al Olaya, Riyadh, KSA") },
               { icon: "schedule", text: t("contact.hours") },

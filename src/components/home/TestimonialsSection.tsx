@@ -85,7 +85,7 @@ export default function TestimonialsSection() {
                 </div>
                 <div>
                   <div style={{ fontSize: 15, fontWeight: 700, color: "var(--text)" }}>{isRtl ? (rev.client_name_ar || rev.client_name || rev.name) : (rev.client_name || rev.name)}</div>
-                  <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--text-dim)", marginTop: 2 }}>{rev.role || (isRtl ? "عميلة أيلة" : "Ayla Client")}</div>
+                  <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--text-dim)", marginTop: 2 }}>{rev.role || (isRtl ? "عميلة إيلا" : "Ella Client")}</div>
                 </div>
               </div>
             </div>

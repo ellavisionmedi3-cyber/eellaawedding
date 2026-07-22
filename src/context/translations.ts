@@ -42,7 +42,7 @@ export const translations: any = {
       title: "Voices of Excellence",
       list: [
         { 
-          quote: "Ayla Media didn't just take photos; they captured the soul of our wedding. Being in an all-female environment allowed me to be completely myself.", 
+          quote: "Ella Media didn't just take photos; they captured the soul of our wedding. Being in an all-female environment allowed me to be completely myself.", 
           name: "Princess Jawhara", 
           role: "Riyadh Private Celebration" 
         },
@@ -61,11 +61,11 @@ export const translations: any = {
     about: {
       eyebrow: "Our Story",
       title: "Artistry in Every Frame",
-      desc: "Founded on the principles of privacy, elegance, and cinematic storytelling, Ayla Media is Saudi Arabia's premier destination for luxury female-only wedding photography.",
+      desc: "Founded on the principles of privacy, elegance, and cinematic storytelling, Ella Media is Saudi Arabia's premier destination for luxury female-only wedding photography.",
       heritage: "Our Heritage",
       visionTitle: "The Vision Behind",
       visionSpan: "The Lens",
-      visionDesc: "Founded on the principles of privacy and artistry, Ayla Media emerged from a desire to provide Saudi women with a space where their most precious moments are captured by an all-female team.",
+      visionDesc: "Founded on the principles of privacy and artistry, Ella Media emerged from a desire to provide Saudi women with a space where their most precious moments are captured by an all-female team.",
       pillars: "Our Pillars of Excellence",
       artisans: "The Artisans",
       ledBy: "Led by Women, For Women",
@@ -110,7 +110,7 @@ export const translations: any = {
       bookSignature: "Book Signature Experience",
       faqTitle: "Frequently Asked Questions",
       faq: [
-        { q: "Do you offer destination wedding packages outside Riyadh?", a: "Yes, Ayla Media travels throughout Saudi Arabia and internationally. Travel and accommodation fees apply for locations outside Riyadh." },
+        { q: "Do you offer destination wedding packages outside Riyadh?", a: "Yes, Ella Media travels throughout Saudi Arabia and internationally. Travel and accommodation fees apply for locations outside Riyadh." },
         { q: "How long does the editing process take?", a: "You'll receive highlights within 7 days. The full gallery and album design are typically ready within 8-12 weeks." },
         { q: "Is your crew strictly female?", a: "Absolutely. Our entire onsite crew—from lead photographers to lighting assistants—is female-only." },
         { q: "What is the booking deposit?", a: "We require a 30% non-refundable deposit to secure your date. The remaining balance is due two weeks before your event." }
@@ -168,7 +168,7 @@ export const translations: any = {
       desc: "Saudi Arabia's premier female-only wedding photography studio. Cinematic, private, and unforgettable.",
       navTitle: "Navigation",
       contactTitle: "Contact",
-      rights: "Ayla Media. Exclusive Female-Only Wedding Photography Saudi Arabia.",
+      rights: "Ella Media. Exclusive Female-Only Wedding Photography Saudi Arabia.",
       policy: "Privacy Policy",
       terms: "Terms of Service",
       faq: "FAQ"

@@ -86,7 +86,7 @@ export default function PrivacyPolicyPage() {
                 <div>
                   <h2 style={{ fontFamily: "var(--font-display)", fontSize: 24, color: "var(--pink)", marginBottom: 14 }}>1. Introduction & Privacy First</h2>
                   <p style={{ color: "var(--text-muted)", lineHeight: 1.8 }}>
-                    At **Ayla Media**, we hold the privacy of the bride, families, and guests as a core tenet of our brand and service. We commit to protecting your personal data and visual assets with the highest standards. Our entire onsite team and production staff are strictly female, ensuring full comfort, security, and absolute privacy.
+                    At **Ella Media**, we hold the privacy of the bride, families, and guests as a core tenet of our brand and service. We commit to protecting your personal data and visual assets with the highest standards. Our entire onsite team and production staff are strictly female, ensuring full comfort, security, and absolute privacy.
                   </p>
                 </div>
 
