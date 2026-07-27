@@ -81,6 +81,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           [dir="rtl"] .font-display { font-family: var(--font-display-ar); }
           [dir="ltr"] :root { --wa-left: auto; --wa-right: 32px; }
           [dir="rtl"] :root { --wa-left: 32px; --wa-right: auto; }
+          
+          /* تعديل مكان ويدجت الشات ليصبح فوق الواتساب تماماً */
+          #ai-chat-widget-root, .ai-chat-bubble, iframe[src*="chat-eta-gray"] {
+            bottom: 100px !important; /* رفعه للأعلى ليصبح فوق زر الواتساب */
+          }
         `}</style>
       </head>
       <body style={{ position: "relative", minHeight: "100vh" }}>
@@ -113,7 +118,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
             {/* WhatsApp FAB */}
             <a 
-              href={`https://wa.me/${settings.social_whatsapp || "+966536998668"}`} 
+              href={`https://wa.me/${settings.social_whatsapp || "966500000000"}`} 
               target="_blank" 
               rel="noopener noreferrer" 
               className="whatsapp-fab"
