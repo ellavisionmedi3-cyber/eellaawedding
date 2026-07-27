@@ -113,7 +113,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
             {/* WhatsApp FAB */}
             <a 
-              href={`https://wa.me/${settings.social_whatsapp || "966500000000"}`} 
+              href={`https://wa.me/${settings.social_whatsapp || "+966536998668"}`} 
               target="_blank" 
               rel="noopener noreferrer" 
               className="whatsapp-fab"
@@ -143,6 +143,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             
             <GlobalAudioPlayer />
             <PromoPopup />
+
+            {/* AI Chat Widget Script */}
+            <script 
+              src="https://chat-eta-gray.vercel.app/widget.js" 
+              data-business-id="6e5495b0-f465-40b9-bd4d-b9dee1e43241"
+              defer
+            />
+
           </LanguageProvider>
         </SettingsProvider>
         <style>{`.whatsapp-fab:hover { transform: scale(1.1) !important; }`}</style>
